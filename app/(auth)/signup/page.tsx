@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 export default function SignupPage() {
     const router = useRouter()
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
@@ -28,6 +29,9 @@ export default function SignupPage() {
                 password,
                 options: {
                     emailRedirectTo: `${location.origin}/auth/callback`,
+                    data: {
+                        full_name: name,
+                    }
                 },
             })
 
@@ -81,6 +85,25 @@ export default function SignupPage() {
                     ) : (
                         <>
                             <form onSubmit={handleSignup} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                                        Full Name
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle flex items-center justify-center">
+                                            <span className="text-xs font-bold font-sans">A</span>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            placeholder="Jane Doe"
+                                            className="input-field pl-9"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label className="block text-sm font-medium text-foreground mb-1.5">
                                         Email Address
