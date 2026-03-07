@@ -1,7 +1,8 @@
 'use client'
 
+import { SignInPage } from '@/components/ui/sign-in'
 import { createClient } from '@/lib/supabase/client-ssr'
-import { FlaskConical, Loader2, Lock, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -54,123 +55,69 @@ export default function SignupPage() {
         }
     }
 
-    return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-[400px]">
-                {/* Logo */}
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
-                        <FlaskConical className="w-6 h-6 text-white" />
-                    </div>
-                    <h1 className="text-2xl font-bold text-foreground tracking-tight">Create an account</h1>
-                    <p className="text-sm text-foreground-subtle mt-1">Join TestPilot AI today</p>
-                </div>
+    const sampleTestimonials = [
+        {
+            avatarSrc: "https://randomuser.me/api/portraits/women/67.jpg",
+            name: "Sarah Chen",
+            handle: "@sarah_digital",
+            text: "The automation tools here are top-notch. I can't imagine going back to manual Gherkin writing."
+        },
+        {
+            avatarSrc: "https://randomuser.me/api/portraits/men/86.jpg",
+            name: "Michael Ross",
+            handle: "@mross_dev",
+            text: "Clean, fast, and reliable. TestPilot AI is the future of QA engineering."
+        }
+    ];
 
-                {/* Card */}
-                <div className="card p-6 md:p-8">
-                    {success ? (
-                        <div className="text-center space-y-4 py-4">
-                            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <Mail className="w-6 h-6 text-green-400" />
-                            </div>
-                            <h3 className="text-lg font-medium text-foreground">Check your email</h3>
-                            <p className="text-sm text-foreground-subtle">
-                                We've sent a verification link to <strong>{email}</strong>.
-                                Please check your inbox to complete signup.
-                            </p>
-                            <Link href="/login" className="btn-secondary w-full flex justify-center mt-4">
-                                Return to Login
-                            </Link>
+    if (success) {
+        return (
+            <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 text-white">
+                <div className="w-full max-w-md animate-fade-slide-in">
+                    <div className="card bg-white/5 border-white/10 p-8 rounded-[2rem] backdrop-blur-xl text-center space-y-6">
+                        <div className="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                            <Mail className="w-8 h-8 text-indigo-400" />
                         </div>
-                    ) : (
-                        <>
-                            <form onSubmit={handleSignup} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1.5">
-                                        Full Name
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle flex items-center justify-center">
-                                            <span className="text-xs font-bold font-sans">A</span>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="Jane Doe"
-                                            className="input-field pl-9"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1.5">
-                                        Email Address
-                                    </label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="you@example.com"
-                                            className="input-field pl-9"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1.5">
-                                        Password
-                                    </label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
-                                        <input
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="At least 6 characters"
-                                            className="input-field pl-9"
-                                            required
-                                            minLength={6}
-                                        />
-                                    </div>
-                                    <p className="text-[11px] text-foreground-muted mt-1.5">
-                                        Make sure it's at least 6 characters.
-                                    </p>
-                                </div>
-
-                                {error && (
-                                    <div className="p-3 bg-red-900/20 border border-red-900/50 rounded-md">
-                                        <p className="text-xs text-red-400 text-center">{error}</p>
-                                    </div>
-                                )}
-
-                                <button
-                                    type="submit"
-                                    disabled={isLoading || !email || password.length < 6}
-                                    className="btn-primary w-full flex items-center justify-center mt-2"
-                                >
-                                    {isLoading ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                        'Create Account'
-                                    )}
-                                </button>
-                            </form>
-
-                            <div className="mt-6 text-center text-sm text-foreground-subtle">
-                                Already have an account?{' '}
-                                <Link href="/login" className="text-primary hover:text-primary-hover font-medium transition-colors">
-                                    Sign in
-                                </Link>
-                            </div>
-                        </>
-                    )}
+                        <h3 className="text-2xl font-semibold tracking-tight">Check your email</h3>
+                        <p className="text-slate-400">
+                            We've sent a verification link to <strong className="text-white">{email}</strong>.
+                            Please check your inbox to complete signup.
+                        </p>
+                        <Link href="/login" className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex justify-center font-medium">
+                            Return to Login
+                        </Link>
+                    </div>
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="bg-[#020617]">
+            <SignInPage
+                title={<span className="font-light tracking-tighter">Create Account</span>}
+                description="Join TestPilot AI today and start automating your testing workflow."
+                heroImageSrc="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2160&auto=format&fit=crop"
+                testimonials={sampleTestimonials}
+                onSignIn={handleSignup}
+                onBackToSignIn={() => router.push('/login')}
+                submitButtonText="Create Account"
+                showNameField={true}
+                nameValue={name}
+                onNameChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                emailValue={email}
+                onEmailChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                passwordValue={password}
+                onPasswordChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                isLoading={isLoading}
+                error={error}
+                onGoogleSignIn={async () => {
+                    await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: { redirectTo: `${location.origin}/auth/callback` }
+                    });
+                }}
+            />
         </div>
-    )
+    );
 }
