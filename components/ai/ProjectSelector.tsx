@@ -10,8 +10,6 @@ interface ProjectSelectorProps {
     onSelect: (projectId: string) => void;
 }
 
-const DEFAULT_PROJECT_ID = '00000000-0000-0000-0000-000000000001';
-
 async function fetchProjects(): Promise<Project[]> {
     const res = await fetch('/api/projects');
     const data = await res.json();
@@ -31,7 +29,7 @@ export default function ProjectSelector({ selectedProjectId, onSelect }: Project
     });
 
     const selectedProject = projects.find((p) => p.id === selectedProjectId);
-    const displayName = selectedProject?.name || 'Default Project';
+    const displayName = selectedProject?.name || 'Select Project';
 
     const handleCreate = async () => {
         if (!newProjectName.trim()) return;
@@ -54,6 +52,13 @@ export default function ProjectSelector({ selectedProjectId, onSelect }: Project
             setIsCreating(false);
         }
     };
+
+    // Auto-select first project if none selected
+    useEffect(() => {
+        if (!selectedProjectId && projects.length > 0) {
+            onSelect(projects[0].id);
+        }
+    }, [projects, selectedProjectId, onSelect]);
 
     // Close on outside click
     useEffect(() => {
@@ -82,33 +87,19 @@ export default function ProjectSelector({ selectedProjectId, onSelect }: Project
                 {isOpen && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-background-card border border-border rounded-lg shadow-2xl z-50 overflow-hidden animate-fade-in">
                         <div className="max-h-48 overflow-y-auto">
-                            {/* Default Project */}
-                            <button
-                                onClick={() => { onSelect(DEFAULT_PROJECT_ID); setIsOpen(false); }}
-                                className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-background-surface text-sm text-foreground transition-colors"
-                            >
-                                <FolderOpen className="w-3.5 h-3.5 text-foreground-subtle" />
-                                <span className="flex-1 text-left">Default Project</span>
-                                {selectedProjectId === DEFAULT_PROJECT_ID && (
-                                    <Check className="w-3.5 h-3.5 text-primary" />
-                                )}
-                            </button>
-
-                            {projects
-                                .filter((p) => p.id !== DEFAULT_PROJECT_ID)
-                                .map((project) => (
-                                    <button
-                                        key={project.id}
-                                        onClick={() => { onSelect(project.id); setIsOpen(false); }}
-                                        className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-background-surface text-sm text-foreground transition-colors"
-                                    >
-                                        <FolderOpen className="w-3.5 h-3.5 text-foreground-subtle" />
-                                        <span className="flex-1 text-left truncate">{project.name}</span>
-                                        {selectedProjectId === project.id && (
-                                            <Check className="w-3.5 h-3.5 text-primary" />
-                                        )}
-                                    </button>
-                                ))}
+                            {projects.map((project) => (
+                                <button
+                                    key={project.id}
+                                    onClick={() => { onSelect(project.id); setIsOpen(false); }}
+                                    className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-background-surface text-sm text-foreground transition-colors"
+                                >
+                                    <FolderOpen className="w-3.5 h-3.5 text-foreground-subtle" />
+                                    <span className="flex-1 text-left truncate">{project.name}</span>
+                                    {selectedProjectId === project.id && (
+                                        <Check className="w-3.5 h-3.5 text-primary" />
+                                    )}
+                                </button>
+                            ))}
                         </div>
 
                         <div className="border-t border-border p-2">

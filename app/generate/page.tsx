@@ -6,10 +6,9 @@ import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { TestCase } from '@/types/generation.types';
-import { Sparkles } from 'lucide-react';
-import { useState } from 'react';
-
-const DEFAULT_PROJECT_ID = '00000000-0000-0000-0000-000000000001';
+import { Loader2, Sparkles } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 interface GenerationState {
     test_cases: TestCase[] | null;
@@ -17,9 +16,10 @@ interface GenerationState {
     step_defs: string | null;
 }
 
-export default function GeneratePage() {
+function GenerateContent() {
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<TabId>('test_cases');
-    const [selectedProjectId, setSelectedProjectId] = useState(DEFAULT_PROJECT_ID);
+    const [selectedProjectId, setSelectedProjectId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
@@ -27,6 +27,49 @@ export default function GeneratePage() {
         gherkin: null,
         step_defs: null,
     });
+
+    useEffect(() => {
+        const pId = searchParams.get('projectId');
+        if (pId) {
+            setSelectedProjectId(pId);
+        }
+    }, [searchParams]);
+
+    // Load project history when selectedProjectId changes
+    useEffect(() => {
+        if (!selectedProjectId) return;
+
+        const loadProjectHistory = async () => {
+            try {
+                const res = await fetch(`/api/history?projectId=${selectedProjectId}&limit=10`);
+                const data = await res.json();
+
+                if (data.success && data.data.length > 0) {
+                    // Find the latest of each type
+                    const latestTC = data.data.find((g: any) => g.generation_type === 'test_cases');
+                    const latestGherkin = data.data.find((g: any) => g.generation_type === 'gherkin');
+                    const latestStepDefs = data.data.find((g: any) => g.generation_type === 'step_defs');
+
+                    setOutputs({
+                        test_cases: latestTC ? latestTC.ai_output.testCases : null,
+                        gherkin: latestGherkin ? latestGherkin.ai_output.feature : null,
+                        step_defs: latestStepDefs ? latestStepDefs.ai_output.javaCode : null,
+                    });
+                } else {
+                    // Reset if no history found
+                    setOutputs({
+                        test_cases: null,
+                        gherkin: null,
+                        step_defs: null,
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load project history:', err);
+            }
+        };
+
+        loadProjectHistory();
+    }, [selectedProjectId]);
 
     const handleGenerate = async (requirement: string) => {
         setIsLoading(true);
@@ -153,5 +196,19 @@ export default function GeneratePage() {
                 </div>
             </div>
         </DashboardLayout>
+    );
+}
+
+export default function GeneratePage() {
+    return (
+        <Suspense fallback={
+            <DashboardLayout>
+                <div className="flex items-center justify-center h-full">
+                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                </div>
+            </DashboardLayout>
+        }>
+            <GenerateContent />
+        </Suspense>
     );
 }

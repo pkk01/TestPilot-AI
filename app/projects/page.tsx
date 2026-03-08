@@ -5,6 +5,7 @@ import { Project } from '@/types/project.types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { Clock, FolderOpen, Loader2, Plus, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 async function fetchProjects(): Promise<Project[]> {
@@ -26,6 +27,7 @@ async function createProject(payload: { name: string; description?: string }): P
 }
 
 export default function ProjectsPage() {
+    const router = useRouter();
     const queryClient = useQueryClient();
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState('');
@@ -159,15 +161,19 @@ export default function ProjectsPage() {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {projects.map((project) => (
-                            <div key={project.id} className="card hover:border-border-light transition-colors group">
+                            <div
+                                key={project.id}
+                                onClick={() => router.push(`/generate?projectId=${project.id}`)}
+                                className="card hover:border-primary/50 transition-all group cursor-pointer hover:shadow-lg hover:shadow-primary/5 active:scale-[0.98]"
+                            >
                                 <div className="flex items-start gap-3 mb-3">
                                     <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                                         <FolderOpen className="w-4 h-4 text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-sm font-semibold text-foreground truncate">
+                                        <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                                             {project.name}
                                         </h3>
                                         {project.description && (

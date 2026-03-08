@@ -25,6 +25,22 @@ export default function SignupPage() {
         setSuccess(false)
 
         try {
+            // Check if user already exists in public.users table
+            const { data: existingUser, error: checkError } = await supabase
+                .from('users')
+                .select('id')
+                .eq('email', email)
+                .maybeSingle()
+
+            if (checkError) {
+                console.error('Error checking for existing user:', checkError)
+            }
+
+            if (existingUser) {
+                setError('A user with this email already exists. Please sign in instead.')
+                return
+            }
+
             const { error, data } = await supabase.auth.signUp({
                 email,
                 password,

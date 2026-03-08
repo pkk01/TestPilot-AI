@@ -29,14 +29,15 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [userName, setUserName] = useState<string | null>(null);
     const supabase = createClient();
 
     useEffect(() => {
         const getUser = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
-                setUserEmail(user.email ?? null)
+                const name = user.user_metadata?.full_name || user.email;
+                setUserName(name ?? null)
             }
         }
         getUser()
@@ -93,7 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium text-foreground truncate">
-                                    {userEmail || 'Loading...'}
+                                    {userName || 'Loading...'}
                                 </p>
                                 <p className="text-[10px] text-foreground-subtle">
                                     Sign Out

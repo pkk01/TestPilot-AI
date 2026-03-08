@@ -25,7 +25,26 @@ export async function GET() {
 
         if (error) throw error;
 
-        return NextResponse.json({ success: true, data });
+        // If no projects exist, create one automatically
+        if (!data || data.length === 0) {
+            const { data: newProject, error: createError } = await supabase
+                .from('projects')
+                .insert({
+                    name: 'Personal Project',
+                    description: 'Your default workspace for test generations.',
+                    user_id: user.id
+                })
+                .select()
+                .single();
+
+            if (createError) {
+                console.error('Failed to create default project:', createError);
+            } else {
+                return NextResponse.json({ success: true, data: [newProject] });
+            }
+        }
+
+        return NextResponse.json({ success: true, data: data || [] });
     } catch (error) {
         console.error('Get projects error:', error);
         return NextResponse.json(
