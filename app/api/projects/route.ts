@@ -17,6 +17,37 @@ export async function GET() {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('id', user.id)
+            .single();
+
+        // If user record doesn't exist yet (migration latency), wait slightly and retry once
+        if (userError || !userData) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const { data: retryUser } = await supabase
+                .from('users')
+                .select('id')
+                .eq('id', user.id)
+                .single();
+
+            if (!retryUser) {
+                // Manually sync if trigger failed or is too slow
+                console.log('Syncing user to public.users table:', user.id);
+                const { error: upsertError } = await supabase.from('users').upsert({
+                    id: user.id,
+                    email: user.email,
+                    name: user.user_metadata?.full_name || user.email?.split('@')[0]
+                });
+                if (upsertError) {
+                    console.error('Failed to sync user:', upsertError);
+                } else {
+                    console.log('Successfully synced user:', user.id);
+                }
+            }
+        }
+
         const { data, error } = await supabase
             .from('projects')
             .select('*')

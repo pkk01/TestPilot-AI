@@ -29,7 +29,22 @@ export async function POST(request: NextRequest) {
         }
 
         const { gherkin, projectId } = parsed.data;
-        const resolvedProjectId = projectId || '00000000-0000-0000-0000-000000000001';
+
+        if (!projectId) {
+            return NextResponse.json({ success: false, error: 'Project ID is required' }, { status: 400 });
+        }
+
+        // Verify project ownership
+        const { data: project, error: projectError } = await supabase
+            .from('projects')
+            .select('id')
+            .eq('id', projectId)
+            .eq('user_id', user.id)
+            .single();
+
+        if (projectError || !project) {
+            return NextResponse.json({ success: false, error: 'Unauthorized: Project not found or access denied' }, { status: 403 });
+        }
 
         // Call AI service
         const javaCode = await generateStepDefs(gherkin);
@@ -38,7 +53,7 @@ export async function POST(request: NextRequest) {
         const { data: generation, error: dbError } = await supabase
             .from('generations')
             .insert({
-                project_id: resolvedProjectId,
+                project_id: projectId,
                 requirement_text: gherkin.slice(0, 500), // Store the gherkin as requirement
                 generation_type: 'step_defs',
                 ai_output: { javaCode },

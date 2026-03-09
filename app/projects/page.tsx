@@ -55,18 +55,18 @@ export default function ProjectsPage() {
 
     return (
         <DashboardLayout>
-            <div className="p-6 max-w-[1400px] mx-auto">
+            <div className="p-10 max-w-[1400px] mx-auto animate-fade-slide-in">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-12">
                     <div>
-                        <h1 className="text-2xl font-bold text-foreground mb-1.5">Projects</h1>
-                        <p className="text-sm text-foreground-muted">
-                            Organize your test generations by project.
+                        <h1 className="text-3xl font-bold text-foreground mb-2">Projects</h1>
+                        <p className="text-sm text-foreground-subtle">
+                            Organize your test generations by project workspace.
                         </p>
                     </div>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="btn-primary flex items-center gap-2"
+                        className="btn-primary flex items-center gap-2 py-3 px-6 rounded-xl font-bold uppercase tracking-widest text-xs"
                     >
                         <Plus className="w-4 h-4" />
                         New Project
@@ -75,19 +75,19 @@ export default function ProjectsPage() {
 
                 {/* Create Form Modal */}
                 {showForm && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-                        <div className="card w-full max-w-md animate-slide-up">
-                            <div className="flex items-center justify-between mb-5">
-                                <h2 className="text-base font-semibold text-foreground">Create New Project</h2>
-                                <button onClick={() => setShowForm(false)} className="btn-ghost p-1.5">
-                                    <X className="w-4 h-4" />
+                    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+                        <div className="card-rich w-full max-w-md animate-slide-up shadow-2xl shadow-primary/10">
+                            <div className="flex items-center justify-between mb-8">
+                                <h2 className="text-xl font-bold text-foreground">Create New Project</h2>
+                                <button onClick={() => setShowForm(false)} className="p-2 rounded-lg bg-background-surface hover:bg-background-card-hover text-foreground-subtle transition-all">
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1.5">
-                                        Project Name <span className="text-red-400">*</span>
+                                    <label className="block text-[10px] font-bold text-foreground-subtle uppercase tracking-[0.2em] mb-2">
+                                        Project Name <span className="text-primary">*</span>
                                     </label>
                                     <input
                                         autoFocus
@@ -96,35 +96,35 @@ export default function ProjectsPage() {
                                         onChange={(e) => setName(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
                                         placeholder="e.g. E-commerce Login Module"
-                                        className="input-field"
+                                        className="input-field py-3"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1.5">
-                                        Description <span className="text-foreground-subtle text-xs">(optional)</span>
+                                    <label className="block text-[10px] font-bold text-foreground-subtle uppercase tracking-[0.2em] mb-2">
+                                        Description <span className="text-[10px] opacity-40 lowercase">(optional)</span>
                                     </label>
                                     <textarea
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Brief description of this project..."
-                                        rows={3}
-                                        className="input-field resize-none"
+                                        rows={4}
+                                        className="input-field resize-none py-3"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex gap-2 mt-5">
+                            <div className="flex gap-3 mt-10">
                                 <button
                                     onClick={() => setShowForm(false)}
-                                    className="btn-secondary flex-1"
+                                    className="flex-1 py-3 text-xs font-bold uppercase tracking-widest text-foreground-subtle hover:text-foreground hover:bg-background-surface rounded-xl transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleCreate}
                                     disabled={createMutation.isPending || !name.trim()}
-                                    className="btn-primary flex-1 flex items-center justify-center gap-2"
+                                    className="btn-primary flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
                                 >
                                     {createMutation.isPending ? (
                                         <><Loader2 className="w-4 h-4 animate-spin" />Creating...</>
@@ -135,7 +135,7 @@ export default function ProjectsPage() {
                             </div>
 
                             {createMutation.isError && (
-                                <p className="text-xs text-red-400 mt-3">
+                                <p className="text-xs text-red-500 mt-4 text-center font-bold">
                                     {createMutation.error?.message || 'Failed to create project'}
                                 </p>
                             )}
@@ -146,48 +146,54 @@ export default function ProjectsPage() {
                 {/* Projects Grid */}
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
-                        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                        <Loader2 className="w-8 h-8 text-primary animate-spin" />
                     </div>
                 ) : projects.length === 0 ? (
-                    <div className="card flex flex-col items-center justify-center py-16 text-center max-w-md mx-auto">
-                        <FolderOpen className="w-10 h-10 text-foreground-subtle mb-4" />
-                        <h3 className="text-base font-semibold text-foreground mb-2">No projects yet</h3>
-                        <p className="text-sm text-foreground-subtle mb-5">
-                            Create a project to organize your test generations.
+                    <div className="card-rich flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto">
+                        <div className="w-16 h-16 rounded-2xl bg-background-surface border border-border flex items-center justify-center mb-6">
+                            <FolderOpen className="w-8 h-8 text-foreground-subtle" />
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground mb-2">No projects yet</h3>
+                        <p className="text-sm text-foreground-subtle mb-10 max-w-[280px]">
+                            Create a project to organize your test generations by module or workspace.
                         </p>
-                        <button onClick={() => setShowForm(true)} className="btn-primary flex items-center gap-2">
-                            <Plus className="w-4 h-4" />
+                        <button onClick={() => setShowForm(true)} className="btn-primary py-3 px-8 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl shadow-primary/20">
                             Create First Project
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {projects.map((project) => (
                             <div
                                 key={project.id}
                                 onClick={() => router.push(`/generate?projectId=${project.id}`)}
-                                className="card hover:border-primary/50 transition-all group cursor-pointer hover:shadow-lg hover:shadow-primary/5 active:scale-[0.98]"
+                                className="card-rich group cursor-pointer hover:border-primary/40 hover:scale-[1.02] active:scale-[0.98]"
                             >
-                                <div className="flex items-start gap-3 mb-3">
-                                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                                        <FolderOpen className="w-4 h-4 text-primary" />
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-2xl bg-background-surface border border-border flex items-center justify-center flex-shrink-0 group-hover:border-primary/50 group-hover:bg-primary/5 transition-all">
+                                        <FolderOpen className="w-6 h-6 text-foreground-muted group-hover:text-primary transition-colors" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                                        <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors truncate mb-1">
                                             {project.name}
                                         </h3>
                                         {project.description && (
-                                            <p className="text-xs text-foreground-subtle mt-0.5 line-clamp-2">
+                                            <p className="text-xs text-foreground-subtle line-clamp-2 leading-relaxed">
                                                 {project.description}
                                             </p>
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1.5 text-xs text-foreground-subtle">
-                                    <Clock className="w-3 h-3" />
-                                    <span>
-                                        Created {formatDistanceToNow(new Date(project.created_at), { addSuffix: true })}
-                                    </span>
+                                <div className="flex items-center justify-between mt-8 pt-6 border-t border-border/50">
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-foreground-subtle uppercase tracking-wider">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        <span>
+                                            Created {formatDistanceToNow(new Date(project.created_at), { addSuffix: true })}
+                                        </span>
+                                    </div>
+                                    <div className="w-8 h-8 rounded-full bg-background-surface flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
+                                        <Plus className="w-4 h-4" />
+                                    </div>
                                 </div>
                             </div>
                         ))}

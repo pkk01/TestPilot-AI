@@ -6,17 +6,22 @@
 
 @layer base {
   :root {
-    --background: #0F172A;
-    --card: #1E293B;
-    --surface: #111827;
-    --primary: #6366F1;
-    --primary-hover: #4F46E5;
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
-    --border: #334155;
-    --border-light: #475569;
-    --radius: 8px;
+    --background: #0B0F1A;
+    --background-surface: #121826;
+    --background-card: #1B2333;
+    --background-card-hover: #222C41;
+    --foreground: #F8FAFC;
+    --foreground-muted: #94A3B8;
+    --foreground-subtle: #64748B;
+    --primary: #10B981; /* Emerald green like reference */
+    --primary-hover: #059669;
+    --primary-glow: rgba(16, 185, 129, 0.15);
+    --border: #232D3F;
+    --border-light: #334155;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
   }
 
   * {
@@ -30,11 +35,12 @@
 
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #0F172A;
-    color: #F8FAFC;
+    background-color: var(--background);
+    color: var(--foreground);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   /* Custom scrollbar */
@@ -80,25 +86,38 @@
   }
 
   .card {
-    @apply bg-background-card border border-border rounded-lg p-5;
+    @apply bg-background-card border border-border rounded-lg p-5 transition-all duration-200;
+  }
+
+  .card-rich {
+    @apply bg-background-card border border-border rounded-xl p-6 shadow-xl shadow-black/20 
+           hover:border-primary/30 hover:shadow-primary/5 transition-all duration-300;
+  }
+
+  .glass {
+    @apply bg-background-card/60 backdrop-blur-md border border-white/5;
   }
 
   .input-field {
-    @apply bg-background-surface border border-border rounded-md 
-           px-3 py-2 text-foreground placeholder:text-foreground-subtle
-           focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary
-           transition-colors duration-150 w-full text-sm;
+    @apply bg-background-surface border border-border rounded-lg 
+           px-4 py-2.5 text-foreground placeholder:text-foreground-subtle
+           focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10
+           transition-all duration-200 w-full text-sm;
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-md 
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl 
            text-foreground-muted text-sm font-medium
-           hover:bg-background-card hover:text-foreground 
-           transition-all duration-150 cursor-pointer;
+           transition-all duration-200 cursor-pointer mb-1;
+  }
+
+  .sidebar-link:hover {
+    background-color: var(--background-card-hover);
+    color: var(--foreground);
   }
 
   .sidebar-link-active {
-    @apply bg-primary/10 text-primary border-l-2 border-primary pl-[10px];
+    @apply bg-primary/10 text-primary font-semibold;
   }
 
   .tab-button {

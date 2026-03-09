@@ -56,25 +56,66 @@ CREATE INDEX IF NOT EXISTS idx_generations_created_at ON generations(created_at 
 CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
 
 -- ============================================================
--- INSERT DEFAULT PROJECT for anonymous usage
--- (so users can generate without signing in)
+-- ROW LEVEL SECURITY
 -- ============================================================
-INSERT INTO users (id, email, name)
-VALUES ('00000000-0000-0000-0000-000000000001', 'default@testpilot.ai', 'Default User')
-ON CONFLICT (id) DO NOTHING;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE generations ENABLE ROW LEVEL SECURITY;
 
-INSERT INTO projects (id, user_id, name, description)
-VALUES (
-  '00000000-0000-0000-0000-000000000001',
-  '00000000-0000-0000-0000-000000000001',
-  'Default Project',
-  'Default project for anonymous generation'
-)
-ON CONFLICT (id) DO NOTHING;
+-- Projects Policies
+CREATE POLICY "Users can view their own projects" 
+  ON projects FOR SELECT 
+  USING (auth.uid() = user_id);
 
--- ============================================================
--- ROW LEVEL SECURITY (optional - disable for MVP)
--- ============================================================
--- Uncomment these if you want to add auth later:
--- ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE generations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can create their own projects" 
+  ON projects FOR INSERT 
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own projects" 
+  ON projects FOR UPDATE 
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own projects" 
+  ON projects FOR DELETE 
+  USING (auth.uid() = user_id);
+
+-- Generations Policies
+-- (Generations are accessed through projects)
+CREATE POLICY "Users can view their own generations" 
+  ON generations FOR SELECT 
+  USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      WHERE projects.id = generations.project_id 
+      AND projects.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert their own generations" 
+  ON generations FOR INSERT 
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM projects 
+      WHERE projects.id = generations.project_id 
+      AND projects.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update their own generations" 
+  ON generations FOR UPDATE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      WHERE projects.id = generations.project_id 
+      AND projects.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete their own generations" 
+  ON generations FOR DELETE 
+  USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      WHERE projects.id = generations.project_id 
+      AND projects.user_id = auth.uid()
+    )
+  );
