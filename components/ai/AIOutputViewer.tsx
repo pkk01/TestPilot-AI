@@ -2,6 +2,7 @@
 
 import { TestCase } from '@/types/generation.types';
 import { Check, Copy, Download, FileText } from 'lucide-react';
+import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
 import { useCallback, useState } from 'react';
 import { TabId } from './GenerationTabs';
@@ -155,16 +156,11 @@ export default function AIOutputViewer({
     // Loading state
     if (isLoading) {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20">
-                <div className="relative">
-                    <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-                </div>
-                <div className="text-center">
-                    <p className="text-sm font-medium text-foreground mb-1">
-                        Generating test artifacts...
-                    </p>
+            <div className="flex-1 flex flex-col items-center justify-center py-20 animate-fade-in shadow-[inset_0_0_100px_rgba(var(--primary-rgb),0.02)]">
+                <LoaderFive text="Analyzing requirement..." />
+                <div className="text-center mt-4">
                     <p className="text-xs text-foreground-subtle">
-                        Groq AI is analyzing your requirement
+                        Groq AI is processing your request
                     </p>
                 </div>
             </div>

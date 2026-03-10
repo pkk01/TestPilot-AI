@@ -4,7 +4,8 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Project } from '@/types/project.types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { Clock, FolderOpen, Loader2, Plus, X } from 'lucide-react';
+import { Clock, FolderOpen, Plus, X } from 'lucide-react';
+import { LoaderFive } from '@/components/ui/loader';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -127,7 +128,7 @@ export default function ProjectsPage() {
                                     className="btn-primary flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
                                 >
                                     {createMutation.isPending ? (
-                                        <><Loader2 className="w-4 h-4 animate-spin" />Creating...</>
+                                        <><LoaderFive size="sm" text="" className="gap-0" />Creating...</>
                                     ) : (
                                         <><Plus className="w-4 h-4" />Create Project</>
                                     )}
@@ -146,7 +147,7 @@ export default function ProjectsPage() {
                 {/* Projects Grid */}
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
-                        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                        <LoaderFive text="Loading projects..." />
                     </div>
                 ) : projects.length === 0 ? (
                     <div className="card-rich flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto">

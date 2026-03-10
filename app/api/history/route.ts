@@ -65,3 +65,59 @@ export async function GET(request: NextRequest) {
         );
     }
 }
+
+// DELETE /api/history - Delete a specific generation
+export async function DELETE(request: NextRequest) {
+    try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ success: false, error: 'Generation ID is required' }, { status: 400 });
+        }
+
+        // Verify ownership: generation -> project -> user
+        const { data: generation, error: genError } = await supabase
+            .from('generations')
+            .select(`
+                id,
+                project_id,
+                projects!inner (
+                    user_id
+                )
+            `)
+            .eq('id', id)
+            .single();
+
+        if (genError || !generation) {
+            return NextResponse.json({ success: false, error: 'Generation not found' }, { status: 404 });
+        }
+
+        // @ts-ignore - projects is joined
+        if (generation.projects.user_id !== user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+        }
+
+        const { error: deleteError } = await supabase
+            .from('generations')
+            .delete()
+            .eq('id', id);
+
+        if (deleteError) throw deleteError;
+
+        return NextResponse.json({ success: true, message: 'Generation deleted successfully' });
+    } catch (error) {
+        console.error('Delete generation error:', error);
+        return NextResponse.json(
+            { success: false, error: 'Failed to delete generation' },
+            { status: 500 }
+        );
+    }
+}

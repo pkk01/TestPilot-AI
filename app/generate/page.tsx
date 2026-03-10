@@ -6,7 +6,8 @@ import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { TestCase } from '@/types/generation.types';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { LoaderFive } from '@/components/ui/loader';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
@@ -204,7 +205,7 @@ export default function GeneratePage() {
         <Suspense fallback={
             <DashboardLayout>
                 <div className="flex items-center justify-center h-full">
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                    <LoaderFive text="Preparing workspace..." />
                 </div>
             </DashboardLayout>
         }>

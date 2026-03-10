@@ -1,6 +1,7 @@
 'use client';
 
-import { AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { AlertCircle, Sparkles } from 'lucide-react';
+import { LoaderFive } from '../ui/loader';
 import { useState } from 'react';
 
 interface RequirementInputProps {
@@ -100,12 +101,12 @@ export default function RequirementInput({
             <button
                 onClick={handleSubmit}
                 disabled={isLoading || isOverLimit || requirement.trim().length < 10}
-                className="btn-primary w-full flex items-center justify-center gap-2 py-3"
+                className="btn-primary w-full flex items-center justify-center gap-2 py-3 disabled:opacity-70"
             >
                 {isLoading ? (
                     <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Generating test artifacts...</span>
+                        <LoaderFive size="sm" text="" className="gap-0" />
+                        <span>Generating...</span>
                     </>
                 ) : (
                     <>
@@ -116,10 +117,10 @@ export default function RequirementInput({
             </button>
 
             {isLoading && (
-                <div className="card p-3 animate-fade-in">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                        <p className="text-xs text-foreground-muted">
+                <div className="card-rich p-4 animate-fade-in border-primary/20 bg-primary/5">
+                    <div className="flex items-center gap-4">
+                        <LoaderFive size="sm" text="" className="flex-shrink-0" />
+                        <p className="text-xs text-foreground font-medium">
                             AI is analyzing your requirement and generating artifacts...
                         </p>
                     </div>

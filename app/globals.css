@@ -14,6 +14,7 @@
     --foreground-muted: #94A3B8;
     --foreground-subtle: #64748B;
     --primary: #10B981; /* Emerald green like reference */
+    --primary-rgb: 16, 185, 129;
     --primary-hover: #059669;
     --primary-glow: rgba(16, 185, 129, 0.15);
     --border: #232D3F;

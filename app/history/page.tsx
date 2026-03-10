@@ -13,11 +13,13 @@ import {
     FlaskConical,
     GitBranch,
     History,
-    Loader2,
     Search,
+    Trash2,
 } from 'lucide-react';
+import { LoaderFive } from '@/components/ui/loader';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 async function fetchHistory(): Promise<Generation[]> {
     const res = await fetch('/api/history?limit=100');
@@ -50,6 +52,8 @@ const typeConfig = {
 function HistoryCard({ generation }: { generation: Generation }) {
     const [expanded, setExpanded] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const queryClient = useQueryClient();
     const config = typeConfig[generation.generation_type];
     const Icon = config.icon;
 
@@ -68,6 +72,31 @@ function HistoryCard({ generation }: { generation: Generation }) {
         await navigator.clipboard.writeText(getOutputText());
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleDelete = async () => {
+        if (!window.confirm('Are you sure you want to delete this generation history? This action cannot be undone.')) {
+            return;
+        }
+
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/history?id=${generation.id}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                queryClient.invalidateQueries({ queryKey: ['history'] });
+            } else {
+                throw new Error(data.error || 'Failed to delete');
+            }
+        } catch (error: any) {
+            console.error('Delete error:', error);
+            alert(error.message || 'Failed to delete generation');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -106,6 +135,18 @@ function HistoryCard({ generation }: { generation: Generation }) {
                             <Check className="w-4 h-4 text-primary" />
                         ) : (
                             <Copy className="w-4 h-4" />
+                        )}
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="p-2 rounded-lg bg-background-surface hover:bg-red-500/10 text-foreground-subtle hover:text-red-500 transition-all disabled:opacity-50"
+                        title="Delete generation"
+                    >
+                        {isDeleting ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Trash2 className="w-4 h-4" />
                         )}
                     </button>
                     <button
@@ -207,7 +248,7 @@ export default function HistoryPage() {
                 {/* Content */}
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
-                        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                        <LoaderFive text="Loading history..." />
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className="card-rich flex flex-col items-center justify-center py-24 text-center max-w-lg mx-auto">
