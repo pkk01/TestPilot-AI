@@ -45,11 +45,13 @@ export const Footer = ({
                     <div className="flex flex-col mb-12 sm:mb-20 md:mb-0 w-full">
                         <div className="w-full flex flex-col items-center">
                             <div className="space-y-2 flex flex-col items-center flex-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-foreground text-3xl font-bold">
-                                        {brandName}
-                                    </span>
-                                </div>
+                                <Link href="/dashboard" className="flex flex-col items-center hover:opacity-80 transition-opacity">
+                                    <div className="flex items-center gap-0.5">
+                                        <span className="text-white text-4xl font-extrabold tracking-tighter uppercase italic">Test</span>
+                                        <span className="text-primary text-4xl font-extrabold tracking-tighter uppercase italic">Pilot</span>
+                                    </div>
+                                    <span className="text-[12px] font-medium text-primary/80 tracking-[0.4em] uppercase -mt-1.5 pl-1 text-center">AI Engine</span>
+                                </Link>
                                 <p className="text-muted-foreground font-semibold text-center w-full max-w-sm sm:w-96 px-4 sm:px-0">
                                     {brandDescription}
                                 </p>
@@ -110,7 +112,7 @@ export const Footer = ({
 
                 {/* Large background text */}
                 <div
-                    className="bg-gradient-to-b from-foreground/20 via-foreground/10 to-transparent bg-clip-text text-transparent leading-none absolute left-1/2 -translate-x-1/2 bottom-40 md:bottom-32 font-extrabold tracking-tighter pointer-events-none select-none text-center px-4"
+                    className="bg-gradient-to-b from-foreground/20 via-foreground/10 to-transparent bg-clip-text text-transparent leading-none absolute left-1/2 -translate-x-1/2 bottom-56 md:bottom-48 font-extrabold tracking-tighter pointer-events-none select-none text-center px-4"
                     style={{
                         fontSize: 'clamp(3rem, 12vw, 10rem)',
                         maxWidth: '95vw'
@@ -120,13 +122,13 @@ export const Footer = ({
                 </div>
 
                 {/* Bottom logo */}
-                <div className="absolute hover:border-foreground duration-400 drop-shadow-[0_0px_20px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_0px_20px_rgba(255,255,255,0.3)] bottom-24 md:bottom-20 backdrop-blur-sm rounded-3xl bg-background/60 left-1/2 border-2 border-border flex items-center justify-center p-3 -translate-x-1/2 z-10">
-                    <div className="w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Link href="/dashboard" className="absolute hover:border-foreground transition-all duration-400 drop-shadow-[0_0px_20px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_0px_20px_rgba(255,255,255,0.3)] bottom-16 md:bottom-12 backdrop-blur-sm rounded-3xl bg-background/60 left-1/2 border-2 border-border flex items-center justify-center p-3 -translate-x-1/2 z-10 hover:scale-105">
+                    <div className="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 bg-gradient-to-br from-primary to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
                         {brandIcon || (
-                            <NotepadTextDashed className="w-8 sm:w-10 md:w-14 h-8 sm:h-10 md:h-14 text-white drop-shadow-lg" />
+                            <NotepadTextDashed className="w-8 sm:w-10 md:w-12 h-8 sm:h-10 md:h-12 text-white drop-shadow-lg" />
                         )}
                     </div>
-                </div>
+                </Link>
 
                 {/* Bottom line */}
                 <div className="absolute bottom-32 sm:bottom-34 backdrop-blur-sm h-1 bg-gradient-to-r from-transparent via-border to-transparent w-full left-1/2 -translate-x-1/2"></div>

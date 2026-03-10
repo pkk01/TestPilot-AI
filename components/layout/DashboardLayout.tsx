@@ -16,6 +16,7 @@ import {
     Sparkles,
     UserCircle
 } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -60,17 +61,32 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Sidebar open={open} setOpen={setOpen}>
                 <SidebarBody className="justify-between gap-10 bg-background border-r border-border">
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-                        <div className="flex items-center gap-3 px-2 h-12 mb-8">
-                            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
-                                <FlaskConical className="w-4 h-4 text-white" />
+                        <Link 
+                            href="/dashboard"
+                            className={cn(
+                                "flex items-center h-12 mb-8 transition-all duration-300 hover:opacity-80 group/logo",
+                                open ? "gap-3 px-2" : "justify-center px-0"
+                            )}
+                        >
+                            <div className={cn(
+                                "rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 transition-all duration-300 group-hover/logo:scale-105",
+                                open ? "w-10 h-10" : "w-8 h-8"
+                            )}>
+                                <FlaskConical className={cn(
+                                    "text-white transition-all duration-300",
+                                    open ? "w-5 h-5" : "w-4 h-4"
+                                )} />
                             </div>
                             {open && (
-                                <div className="flex items-center animate-in fade-in duration-300">
-                                    <span className="font-bold text-foreground text-base tracking-tight">TestPilot</span>
-                                    <span className="font-bold text-primary text-base tracking-tight"> AI</span>
+                                <div className="flex flex-col animate-in fade-in duration-500 overflow-hidden">
+                                    <div className="flex items-center gap-0.5 whitespace-nowrap">
+                                        <span className="font-extrabold text-foreground text-xl tracking-tighter uppercase italic">Test</span>
+                                        <span className="font-extrabold text-primary text-xl tracking-tighter uppercase italic">Pilot</span>
+                                    </div>
+                                    <span className="text-[10px] font-medium text-primary/80 tracking-[0.2em] uppercase -mt-1 pl-0.5 whitespace-nowrap">AI Engine</span>
                                 </div>
                             )}
-                        </div>
+                        </Link>
 
                         <div className="space-y-1">
                             {navItems.map((link) => (

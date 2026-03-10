@@ -10,12 +10,18 @@ export default function HomePage() {
         <main className="flex flex-col min-h-screen bg-black overflow-hidden">
             {/* Navbar placeholder */}
             <nav className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-black/50 backdrop-blur-md border-b border-white/10">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold">T</span>
+                <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
+                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
+                        <FlaskConical className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xl font-bold text-white tracking-tight">TestPilot AI</span>
-                </div>
+                    <div className="flex flex-col -gap-1">
+                        <div className="flex items-center gap-0.5">
+                            <span className="text-2xl font-extrabold text-white tracking-tighter uppercase italic">Test</span>
+                            <span className="text-2xl font-extrabold text-primary tracking-tighter uppercase italic">Pilot</span>
+                        </div>
+                        <span className="text-[12px] font-medium text-primary/80 tracking-[0.3em] uppercase -mt-1 pl-1">AI Engine</span>
+                    </div>
+                </Link>
                 <Link
                     href="/dashboard"
                     className="px-4 py-2 rounded-full bg-white text-black font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
@@ -86,7 +92,7 @@ export default function HomePage() {
                 ]}
                 creatorName="Pratham Kumar"
                 creatorUrl="https://github.com/pkk01"
-                brandIcon={<FlaskConical className="w-8 sm:w-10 md:w-14 h-8 sm:h-10 md:h-14 text-white drop-shadow-lg" />}
+                brandIcon={<FlaskConical className="w-10 h-10 sm:w-12 sm:h-12 text-white" />}
             />
         </main>
     );

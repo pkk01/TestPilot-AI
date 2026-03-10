@@ -1,6 +1,7 @@
 "use client";
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, FlaskConical } from 'lucide-react';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 // --- HELPER COMPONENTS (ICONS) ---
 
@@ -58,8 +59,8 @@ const TestimonialCard = ({ testimonial, delay }: { testimonial: Testimonial, del
         <img src={testimonial.avatarSrc} className="h-10 w-10 object-cover rounded-2xl" alt="avatar" />
         <div className="text-sm leading-snug">
             <p className="flex items-center gap-1 font-medium">{testimonial.name}</p>
-            <p className="text-white/50">{testimonial.handle}</p>
-            <p className="mt-1 text-white/80">{testimonial.text}</p>
+            <p className="text-white/50 text-xs">{testimonial.handle}</p>
+            <p className="mt-0.5 text-white/80 text-xs leading-relaxed">{testimonial.text}</p>
         </div>
     </div>
 );
@@ -94,20 +95,32 @@ export const SignInPage: React.FC<SignInPageProps> = ({
             {/* Left column: sign-in form */}
             <section className="flex-1 flex items-center justify-center p-8 overflow-y-auto">
                 <div className="w-full max-w-md">
-                    <div className="flex flex-col gap-6">
-                        <h1 className="animate-fade-slide-in animate-delay-100 text-4xl md:text-5xl font-semibold leading-tight opacity-0">{title}</h1>
-                        <p className="animate-fade-slide-in animate-delay-200 text-slate-400 opacity-0">{description}</p>
+                    <div className="flex flex-col gap-4">
+                        <Link href="/dashboard" className="flex items-center gap-4 animate-fade-slide-in animate-delay-75 opacity-0 mb-2 hover:opacity-80 transition-opacity group/logo">
+                            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/20 border border-white/10 group-hover/logo:scale-105 transition-transform">
+                                <FlaskConical className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-0.5">
+                                    <span className="text-xl font-extrabold text-white tracking-tighter uppercase italic">Test</span>
+                                    <span className="text-xl font-extrabold text-indigo-400 tracking-tighter uppercase italic">Pilot</span>
+                                </div>
+                                <span className="text-[10px] font-medium text-indigo-300/80 tracking-[0.2em] uppercase -mt-1 pl-0.5">AI Engine</span>
+                            </div>
+                        </Link>
+                        <h1 className="animate-fade-slide-in animate-delay-100 text-2xl md:text-3xl font-semibold leading-tight opacity-0">{title}</h1>
+                        <p className="animate-fade-slide-in animate-delay-200 text-slate-400 text-sm opacity-0">{description}</p>
 
-                        <form className="space-y-5" onSubmit={onSignIn}>
+                        <form className="space-y-4" onSubmit={onSignIn}>
                             {showNameField && (
                                 <div className="animate-fade-slide-in animate-delay-300 opacity-0">
-                                    <label className="text-sm font-medium text-slate-400 block mb-1.5">Full Name</label>
+                                    <label className="text-xs font-medium text-slate-400 block mb-1">Full Name</label>
                                     <GlassInputWrapper>
                                         <input
                                             name="name"
                                             type="text"
                                             placeholder="Enter your full name"
-                                            className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none"
+                                            className="w-full bg-transparent text-sm p-3 rounded-2xl focus:outline-none"
                                             value={nameValue}
                                             onChange={onNameChange}
                                             required
@@ -117,13 +130,13 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                             )}
 
                             <div className={`animate-fade-slide-in ${showNameField ? 'animate-delay-400' : 'animate-delay-300'} opacity-0`}>
-                                <label className="text-sm font-medium text-slate-400 block mb-1.5">Email Address</label>
+                                <label className="text-xs font-medium text-slate-400 block mb-1">Email Address</label>
                                 <GlassInputWrapper>
                                     <input
                                         name="email"
                                         type="email"
                                         placeholder="Enter your email address"
-                                        className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none"
+                                        className="w-full bg-transparent text-sm p-3 rounded-2xl focus:outline-none"
                                         value={emailValue}
                                         onChange={onEmailChange}
                                         required
@@ -132,14 +145,14 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                             </div>
 
                             <div className={`animate-fade-slide-in ${showNameField ? 'animate-delay-500' : 'animate-delay-400'} opacity-0`}>
-                                <label className="text-sm font-medium text-slate-400 block mb-1.5">Password</label>
+                                <label className="text-xs font-medium text-slate-400 block mb-1">Password</label>
                                 <GlassInputWrapper>
                                     <div className="relative">
                                         <input
                                             name="password"
                                             type={showPassword ? 'text' : 'password'}
                                             placeholder="Enter your password"
-                                            className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none"
+                                            className="w-full bg-transparent text-sm p-3 pr-12 rounded-2xl focus:outline-none"
                                             value={passwordValue}
                                             onChange={onPasswordChange}
                                             required
@@ -163,20 +176,20 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                                         <div className="relative flex items-center justify-center w-5 h-5">
                                             <input type="checkbox" name="rememberMe" className="peer absolute opacity-0 w-full h-full cursor-pointer z-10" />
                                             <div className="w-5 h-5 border border-white/20 rounded-md bg-white/5 peer-checked:bg-white peer-checked:border-white transition-all"></div>
-                                            <svg className="absolute w-3 h-3 text-black opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                            <svg className="absolute w-2.5 h-2.5 text-black opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
-                                        <span className="text-white/70 group-hover:text-white transition-colors">Keep me signed in</span>
+                                        <span className="text-white/70 group-hover:text-white transition-colors">Remember me</span>
                                     </label>
-                                    <a href="#" onClick={(e) => { e.preventDefault(); onResetPassword?.(); }} className="hover:underline text-violet-400 transition-colors">Reset password</a>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); onResetPassword?.(); }} className="hover:underline text-violet-400 transition-colors text-xs">Forgot password?</a>
                                 </div>
                             )}
 
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="animate-fade-slide-in animate-delay-600 w-full rounded-2xl bg-indigo-600 py-4 font-medium text-white hover:bg-indigo-500 transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 opacity-0 flex items-center justify-center gap-2"
+                                className="animate-fade-slide-in animate-delay-600 w-full rounded-2xl bg-indigo-600 py-3.5 font-medium text-white hover:bg-indigo-500 transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 opacity-0 flex items-center justify-center gap-2"
                             >
                                 {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                                 {submitButtonText}
@@ -191,7 +204,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                         <button
                             onClick={onGoogleSignIn}
                             disabled={isLoading}
-                            className="animate-fade-slide-in animate-delay-800 w-full flex items-center justify-center gap-3 border border-white/10 rounded-2xl py-4 hover:bg-white/5 transition-all active:scale-[0.98] opacity-0"
+                            className="animate-fade-slide-in animate-delay-800 w-full flex items-center justify-center gap-3 border border-white/10 rounded-2xl py-3.5 hover:bg-white/5 transition-all active:scale-[0.98] opacity-0 text-sm"
                         >
                             <GoogleIcon />
                             Continue with Google
