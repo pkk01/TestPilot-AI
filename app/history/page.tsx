@@ -1,8 +1,9 @@
 'use client';
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import { LoaderFive } from '@/components/ui/loader';
 import { Generation } from '@/types/generation.types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow } from 'date-fns';
 import {
     Check,
@@ -13,13 +14,12 @@ import {
     FlaskConical,
     GitBranch,
     History,
+    Loader2,
     Search,
     Trash2,
 } from 'lucide-react';
-import { LoaderFive } from '@/components/ui/loader';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 
 async function fetchHistory(): Promise<Generation[]> {
     const res = await fetch('/api/history?limit=100');
