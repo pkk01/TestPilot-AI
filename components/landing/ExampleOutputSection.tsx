@@ -1,0 +1,127 @@
+"use client";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+
+const codeLines = [
+    { text: "Feature: Login functionality", color: "text-purple-400", indent: 0 },
+    { text: "", color: "", indent: 0 },
+    { text: "  Scenario: Successful login with valid credentials", color: "text-cyan-400", indent: 0 },
+    { text: "    Given the user is on the login page", color: "text-green-400", indent: 0 },
+    { text: '    And the user enters username "testuser@example.com"', color: "text-green-400", indent: 0 },
+    { text: '    And the user enters password "SecurePass123!"', color: "text-green-400", indent: 0 },
+    { text: '    When the user clicks the "Login" button', color: "text-yellow-400", indent: 0 },
+    { text: "    Then the user should be redirected to the dashboard", color: "text-pink-400", indent: 0 },
+    { text: '    And the page title should contain "Dashboard"', color: "text-pink-400", indent: 0 },
+    { text: "", color: "", indent: 0 },
+    { text: "  Scenario: Failed login with invalid password", color: "text-cyan-400", indent: 0 },
+    { text: "    Given the user is on the login page", color: "text-green-400", indent: 0 },
+    { text: '    And the user enters username "testuser@example.com"', color: "text-green-400", indent: 0 },
+    { text: '    And the user enters password "WrongPassword"', color: "text-green-400", indent: 0 },
+    { text: '    When the user clicks the "Login" button', color: "text-yellow-400", indent: 0 },
+    { text: '    Then an error message "Invalid credentials" should appear', color: "text-pink-400", indent: 0 },
+    { text: "    And the user should remain on the login page", color: "text-pink-400", indent: 0 },
+];
+
+export default function ExampleOutputSection() {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const [visibleLines, setVisibleLines] = useState(0);
+
+    useEffect(() => {
+        if (!isInView) return;
+        const interval = setInterval(() => {
+            setVisibleLines((prev) => {
+                if (prev >= codeLines.length) {
+                    clearInterval(interval);
+                    return prev;
+                }
+                return prev + 1;
+            });
+        }, 80);
+        return () => clearInterval(interval);
+    }, [isInView]);
+
+    return (
+        <section id="example-output" className="relative py-32">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+
+            <div ref={ref} className="max-w-5xl mx-auto px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.7 }}
+                    className="text-center mb-16"
+                >
+                    <span className="text-sm font-semibold text-pink-400 tracking-widest uppercase mb-4 block">
+                        Example Output
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                        See{" "}
+                        <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                            AI in Action
+                        </span>
+                    </h2>
+                    <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                        Watch as TestPilot AI generates Cucumber feature files from a simple requirement.
+                    </p>
+                </motion.div>
+
+                {/* Code editor panel */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                    transition={{ duration: 0.7, delay: 0.2 }}
+                    className="relative"
+                >
+                    {/* Glow behind */}
+                    <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/10 via-pink-600/10 to-cyan-600/10 rounded-3xl blur-2xl" />
+
+                    <div className="relative rounded-2xl border border-white/10 overflow-hidden bg-[#0d1117]">
+                        {/* Editor titlebar */}
+                        <div className="flex items-center justify-between px-5 py-3 bg-[#161b22] border-b border-white/5">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                                <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                            </div>
+                            <span className="text-xs text-gray-500 font-mono">
+                                login.feature — Generated by TestPilot AI
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="px-2 py-0.5 text-[10px] rounded bg-green-500/10 text-green-400 border border-green-500/20 font-semibold">
+                                    AI Generated
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Code content */}
+                        <div className="p-5 font-mono text-sm leading-7 min-h-[400px]">
+                            {codeLines.map((line, i) => (
+                                <div
+                                    key={i}
+                                    className={`flex transition-all duration-300 ${
+                                        i < visibleLines
+                                            ? "opacity-100 translate-y-0"
+                                            : "opacity-0 translate-y-2"
+                                    }`}
+                                >
+                                    <span className="w-8 text-right mr-4 text-gray-600 text-xs select-none">
+                                        {i + 1}
+                                    </span>
+                                    <span className={line.color}>{line.text}</span>
+                                </div>
+                            ))}
+                            {/* Blinking cursor */}
+                            {visibleLines >= codeLines.length && (
+                                <div className="flex">
+                                    <span className="w-8 mr-4" />
+                                    <span className="w-2 h-5 bg-purple-400 animate-pulse" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        </section>
+    );
+}

@@ -51,6 +51,9 @@ const config: Config = {
                 sans: ["Inter", "system-ui", "sans-serif"],
                 mono: ["JetBrains Mono", "Fira Code", "monospace"],
             },
+            backgroundImage: {
+                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+            },
             borderRadius: {
                 xl: "24px",
                 lg: "16px",
@@ -61,6 +64,7 @@ const config: Config = {
                 "spin-slow": "spin 1.5s linear infinite",
                 "fade-in": "fadeIn 0.2s ease-in-out",
                 "slide-up": "slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                "float": "float 6s ease-in-out infinite",
             },
             keyframes: {
                 fadeIn: {
@@ -70,6 +74,10 @@ const config: Config = {
                 slideUp: {
                     "0%": { transform: "translateY(12px)", opacity: "0" },
                     "100%": { transform: "translateY(0)", opacity: "1" },
+                },
+                float: {
+                    "0%, 100%": { transform: "translateY(0)" },
+                    "50%": { transform: "translateY(-10px)" },
                 },
             },
         },

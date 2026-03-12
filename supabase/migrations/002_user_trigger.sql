@@ -2,6 +2,7 @@
 -- USER SYNC TRIGGER
 -- Automatically creates a profile in public.users when a 
 -- new user signs up via Supabase Auth.
+-- Supports both email signup (full_name) and OAuth (name).
 -- ============================================================
 
 -- 1. Create the trigger function
@@ -12,7 +13,12 @@ BEGIN
   VALUES (
     new.id,
     new.email,
-    new.raw_user_meta_data->>'full_name' -- Or whatever name parameter you pass during signup
+    COALESCE(
+      new.raw_user_meta_data->>'full_name',
+      new.raw_user_meta_data->>'name',
+      new.raw_user_meta_data->>'email',
+      new.email
+    )
   )
   ON CONFLICT (id) DO UPDATE SET
     email = EXCLUDED.email,
@@ -21,7 +27,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 3. Attach the trigger to the auth.users table
+-- 2. Attach the trigger to the auth.users table
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
