@@ -79,6 +79,22 @@ export default function LoginPage() {
                 testimonials={sampleTestimonials}
                 onSignIn={handleLogin}
                 onGoogleSignIn={handleGoogleSignIn}
+                onGitHubSignIn={async () => {
+                    setIsLoading(true);
+                    try {
+                        const { error } = await supabase.auth.signInWithOAuth({
+                            provider: 'github',
+                            options: {
+                                redirectTo: `${location.origin}/auth/callback`,
+                            },
+                        });
+                        if (error) throw error;
+                    } catch (error: any) {
+                        setError(error.message);
+                    } finally {
+                        setIsLoading(false);
+                    }
+                }}
                 onCreateAccount={() => router.push('/signup')}
                 isLoading={isLoading}
                 error={error}
