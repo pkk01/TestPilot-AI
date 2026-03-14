@@ -1,7 +1,7 @@
 'use client';
 
 import { TestCase } from '@/types/generation.types';
-import { Check, Copy, Download, FileText } from 'lucide-react';
+import { Check, Copy, Download, FileText, Package } from 'lucide-react';
 import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
 import { useCallback, useState } from 'react';
@@ -93,6 +93,39 @@ export default function AIOutputViewer({
     isLoading,
 }: AIOutputViewerProps) {
     const [copied, setCopied] = useState(false);
+    const [exporting, setExporting] = useState<'selenium' | 'playwright' | null>(null);
+    const [exportError, setExportError] = useState<string | null>(null);
+
+    const canExport = !!(gherkin || stepDefs || (testCases && testCases.length > 0));
+
+    const handleExport = async (framework: 'selenium' | 'playwright') => {
+        setExporting(framework);
+        setExportError(null);
+        try {
+            const res = await fetch('/api/export', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ framework, gherkin, stepDefs, testCases }),
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Export failed');
+            }
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = framework === 'selenium' ? 'automation-selenium.zip' : 'automation-playwright.zip';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err: any) {
+            setExportError(err.message || 'Export failed. Please try again.');
+        } finally {
+            setExporting(null);
+        }
+    };
 
     const getContent = useCallback((): string => {
         switch (activeTab) {
@@ -235,6 +268,47 @@ export default function AIOutputViewer({
                     </div>
                 )}
             </div>
+
+            {/* Export Automation Section */}
+            {canExport && (
+                <div className="border-t border-border bg-background-surface px-4 py-3">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Package className="w-4 h-4 text-primary" />
+                            <span className="text-xs font-bold text-foreground uppercase tracking-wider">Export Automation</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => handleExport('selenium')}
+                                disabled={!!exporting}
+                                className="btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all disabled:opacity-50"
+                            >
+                                {exporting === 'selenium' ? (
+                                    <><LoaderFive size="sm" text="" className="gap-0" /><span>Preparing...</span></>
+                                ) : (
+                                    <><Download className="w-3.5 h-3.5" /><span>Selenium (Java)</span></>
+                                )}
+                            </button>
+                            <button
+                                onClick={() => handleExport('playwright')}
+                                disabled={!!exporting}
+                                className="btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all disabled:opacity-50"
+                            >
+                                {exporting === 'playwright' ? (
+                                    <><LoaderFive size="sm" text="" className="gap-0" /><span>Preparing...</span></>
+                                ) : (
+                                    <><Download className="w-3.5 h-3.5" /><span>Playwright (TS)</span></>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                    {exportError && (
+                        <div className="mt-2 p-2 rounded-lg bg-red-900/20 border border-red-900/50">
+                            <p className="text-xs text-red-400">{exportError}</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
