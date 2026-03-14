@@ -5,7 +5,7 @@ import GenerationTabs, { TabId } from '@/components/ai/GenerationTabs';
 import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { TestCase } from '@/types/generation.types';
+import { TestCase, CoverageResult } from '@/types/generation.types';
 import { Sparkles } from 'lucide-react';
 import { LoaderFive } from '@/components/ui/loader';
 import { useSearchParams } from 'next/navigation';
@@ -15,6 +15,7 @@ interface GenerationState {
     test_cases: TestCase[] | null;
     gherkin: string | null;
     step_defs: string | null;
+    coverage: CoverageResult | null;
 }
 
 function GenerateContent() {
@@ -22,11 +23,14 @@ function GenerateContent() {
     const [activeTab, setActiveTab] = useState<TabId>('test_cases');
     const [selectedProjectId, setSelectedProjectId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isCoverageLoading, setIsCoverageLoading] = useState(false);
+    const [coverageError, setCoverageError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
         test_cases: null,
         gherkin: null,
         step_defs: null,
+        coverage: null,
     });
 
     useEffect(() => {
@@ -51,10 +55,14 @@ function GenerateContent() {
                     const latestGherkin = data.data.find((g: any) => g.generation_type === 'gherkin');
                     const latestStepDefs = data.data.find((g: any) => g.generation_type === 'step_defs');
 
+                    // Load coverage from the latest test_cases generation if available
+                    const coverageData = latestTC?.coverage_result || null;
+
                     setOutputs({
                         test_cases: latestTC ? latestTC.ai_output.testCases : null,
                         gherkin: latestGherkin ? latestGherkin.ai_output.feature : null,
                         step_defs: latestStepDefs ? latestStepDefs.ai_output.javaCode : null,
+                        coverage: coverageData,
                     });
                 } else {
                     // Reset if no history found
@@ -62,6 +70,7 @@ function GenerateContent() {
                         test_cases: null,
                         gherkin: null,
                         step_defs: null,
+                        coverage: null,
                     });
                 }
             } catch (err) {
@@ -75,6 +84,9 @@ function GenerateContent() {
     const handleGenerate = async (requirement: string) => {
         setIsLoading(true);
         setError(null);
+        setCoverageError(null);
+        // Clear previous coverage while new generation is in progress
+        setOutputs(prev => ({ ...prev, coverage: null }));
 
         try {
             // Generate all three in parallel for best UX
@@ -116,14 +128,43 @@ function GenerateContent() {
                 }
             }
 
+            const generatedTestCases = tcData.success ? tcData.data.testCases : null;
+
             setOutputs({
-                test_cases: tcData.success ? tcData.data.testCases : null,
+                test_cases: generatedTestCases,
                 gherkin: newGherkin,
                 step_defs: stepDefsContent,
+                coverage: null,
             });
 
             if (!tcData.success && !gherkinData.success) {
                 setError('Generation failed. Please check your API keys and try again.');
+            }
+
+            // After generation succeeds, trigger coverage analysis in the background
+            if (generatedTestCases && generatedTestCases.length > 0) {
+                setIsCoverageLoading(true);
+                try {
+                    const coverageRes = await fetch('/api/coverage', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            requirement,
+                            testCases: generatedTestCases,
+                            projectId: selectedProjectId,
+                        }),
+                    });
+                    const coverageData = await coverageRes.json();
+                    if (coverageData.success) {
+                        setOutputs(prev => ({ ...prev, coverage: coverageData.data }));
+                    } else {
+                        setCoverageError(coverageData.error || 'Coverage analysis failed.');
+                    }
+                } catch {
+                    setCoverageError('Coverage analysis unavailable. Please try again later.');
+                } finally {
+                    setIsCoverageLoading(false);
+                }
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -136,6 +177,7 @@ function GenerateContent() {
         test_cases: !!outputs.test_cases?.length,
         gherkin: !!outputs.gherkin,
         step_defs: !!outputs.step_defs,
+        coverage: !!outputs.coverage,
     };
 
     return (
@@ -192,6 +234,9 @@ function GenerateContent() {
                             gherkin={outputs.gherkin}
                             stepDefs={outputs.step_defs}
                             isLoading={isLoading}
+                            coverageResult={outputs.coverage}
+                            isCoverageLoading={isCoverageLoading}
+                            coverageError={coverageError}
                         />
                     </div>
                 </div>

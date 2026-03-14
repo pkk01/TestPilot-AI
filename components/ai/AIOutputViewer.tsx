@@ -1,11 +1,12 @@
 'use client';
 
-import { TestCase } from '@/types/generation.types';
+import { TestCase, CoverageResult } from '@/types/generation.types';
 import { Check, Copy, Download, FileText, Package } from 'lucide-react';
 import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
 import { useCallback, useState } from 'react';
 import { TabId } from './GenerationTabs';
+import CoverageAnalysis from './CoverageAnalysis';
 
 // Dynamically import Monaco Editor to avoid SSR issues
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
@@ -16,6 +17,9 @@ interface AIOutputViewerProps {
     gherkin: string | null;
     stepDefs: string | null;
     isLoading: boolean;
+    coverageResult?: CoverageResult | null;
+    isCoverageLoading?: boolean;
+    coverageError?: string | null;
 }
 
 const EDITOR_THEME = 'vs-dark';
@@ -91,6 +95,9 @@ export default function AIOutputViewer({
     gherkin,
     stepDefs,
     isLoading,
+    coverageResult,
+    isCoverageLoading,
+    coverageError,
 }: AIOutputViewerProps) {
     const [copied, setCopied] = useState(false);
     const [exporting, setExporting] = useState<'selenium' | 'playwright' | null>(null);
@@ -135,6 +142,8 @@ export default function AIOutputViewer({
                 return gherkin || '';
             case 'step_defs':
                 return stepDefs || '';
+            case 'coverage':
+                return '';
         }
     }, [activeTab, testCases, gherkin, stepDefs]);
 
@@ -143,6 +152,7 @@ export default function AIOutputViewer({
             case 'test_cases': return 'json';
             case 'gherkin': return 'gherkin';
             case 'step_defs': return 'java';
+            case 'coverage': return 'json';
         }
     };
 
@@ -151,6 +161,7 @@ export default function AIOutputViewer({
             case 'test_cases': return 'json';
             case 'gherkin': return 'feature';
             case 'step_defs': return 'java';
+            case 'coverage': return 'json';
         }
     };
 
@@ -159,12 +170,14 @@ export default function AIOutputViewer({
             case 'test_cases': return 'test_cases.json';
             case 'gherkin': return 'tests.feature';
             case 'step_defs': return 'StepDefinitions.java';
+            case 'coverage': return 'coverage_analysis.json';
         }
     };
 
     const hasContent = activeTab === 'test_cases' ? !!testCases?.length
         : activeTab === 'gherkin' ? !!gherkin
-            : !!stepDefs;
+            : activeTab === 'step_defs' ? !!stepDefs
+                : !!coverageResult;
 
     const handleCopy = async () => {
         const content = getContent();
@@ -185,6 +198,17 @@ export default function AIOutputViewer({
         a.click();
         URL.revokeObjectURL(url);
     };
+
+    // Coverage tab — delegate entirely to CoverageAnalysis component
+    if (activeTab === 'coverage') {
+        return (
+            <CoverageAnalysis
+                coverageResult={coverageResult || null}
+                isLoading={!!isCoverageLoading}
+                error={coverageError}
+            />
+        );
+    }
 
     // Loading state
     if (isLoading) {

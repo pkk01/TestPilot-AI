@@ -27,6 +27,23 @@ export interface StepDefsOutput {
 
 export type AiOutput = TestCasesOutput | GherkinOutput | StepDefsOutput;
 
+// ============================================================
+// Coverage Analysis Types
+// ============================================================
+
+export interface HeatmapItem {
+    scenario: string;
+    coverage: number;
+}
+
+export interface CoverageResult {
+    coverage_score: number;
+    covered: string[];
+    missing: string[];
+    recommendations: string[];
+    heatmap: HeatmapItem[];
+}
+
 export interface Generation {
     id: string;
     project_id: string | null;

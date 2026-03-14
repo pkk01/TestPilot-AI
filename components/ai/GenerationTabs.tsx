@@ -1,8 +1,8 @@
 'use client';
 
-import { Code2, FlaskConical, GitBranch } from 'lucide-react';
+import { Code2, FlaskConical, GitBranch, BarChart3 } from 'lucide-react';
 
-export type TabId = 'test_cases' | 'gherkin' | 'step_defs';
+export type TabId = 'test_cases' | 'gherkin' | 'step_defs' | 'coverage';
 
 interface Tab {
     id: TabId;
@@ -30,6 +30,12 @@ const tabs: Tab[] = [
         icon: Code2,
         description: 'Selenium Java skeletons',
     },
+    {
+        id: 'coverage',
+        label: 'Coverage',
+        icon: BarChart3,
+        description: 'AI-powered coverage analysis',
+    },
 ];
 
 interface GenerationTabsProps {
@@ -39,6 +45,7 @@ interface GenerationTabsProps {
         test_cases: boolean;
         gherkin: boolean;
         step_defs: boolean;
+        coverage: boolean;
     };
 }
 
