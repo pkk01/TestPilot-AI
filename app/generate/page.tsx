@@ -5,9 +5,9 @@ import GenerationTabs, { TabId } from '@/components/ai/GenerationTabs';
 import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { TestCase, CoverageResult } from '@/types/generation.types';
-import { Sparkles } from 'lucide-react';
 import { LoaderFive } from '@/components/ui/loader';
+import { CoverageResult, TestCase } from '@/types/generation.types';
+import { Sparkles } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
@@ -184,18 +184,18 @@ function GenerateContent() {
         <DashboardLayout>
             <div className="flex h-full">
                 {/* Left Panel */}
-                <div className="w-[380px] flex-shrink-0 border-r border-border bg-background-surface flex flex-col">
-                    <div className="px-5 py-4 border-b border-border">
+                <div className="w-[400px] flex-shrink-0 border-r border-border bg-background-surface flex flex-col">
+                    <div className="px-6 py-5 border-b border-border">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <Sparkles className="w-4 h-4 text-primary" />
-                            <h1 className="text-sm font-bold text-foreground">Generate Tests</h1>
+                            <Sparkles className="w-5 h-5 text-gray-400" />
+                            <h1 className="text-lg font-medium text-foreground">Generate Tests</h1>
                         </div>
-                        <p className="text-xs text-foreground-subtle pl-6">
+                        <p className="text-sm text-gray-400 pl-7">
                             AI-powered test artifact generation
                         </p>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-5 space-y-5">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
                         <ProjectSelector
                             selectedProjectId={selectedProjectId}
                             onSelect={setSelectedProjectId}
@@ -208,8 +208,8 @@ function GenerateContent() {
                         />
 
                         {error && (
-                            <div className="p-3 rounded-lg bg-red-900/20 border border-red-900/50">
-                                <p className="text-xs text-red-400">{error}</p>
+                            <div className="card-rich p-4 bg-red-900/10 border-red-800/40">
+                                <p className="text-sm text-red-400">{error}</p>
                             </div>
                         )}
                     </div>

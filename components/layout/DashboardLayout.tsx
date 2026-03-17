@@ -50,10 +50,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     const navItems = [
-        { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5 shrink-0" /> },
-        { href: '/projects', label: 'Projects', icon: <Folder className="h-5 w-5 shrink-0" /> },
-        { href: '/generate', label: 'Generate Tests', icon: <Sparkles className="h-5 w-5 shrink-0" /> },
-        { href: '/history', label: 'History', icon: <History className="h-5 w-5 shrink-0" /> },
+        { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5 shrink-0 text-gray-400" /> },
+        { href: '/projects', label: 'Projects', icon: <Folder className="h-5 w-5 shrink-0 text-gray-400" /> },
+        { href: '/generate', label: 'Generate Tests', icon: <Sparkles className="h-5 w-5 shrink-0 text-gray-400" /> },
+        { href: '/history', label: 'History', icon: <History className="h-5 w-5 shrink-0 text-gray-400" /> },
     ];
 
     return (
@@ -64,12 +64,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         <Link 
                             href="/dashboard"
                             className={cn(
-                                "flex items-center h-12 mb-8 transition-all duration-300 hover:opacity-80 group/logo",
+                                "flex items-center h-12 mb-8 transition-all duration-200 hover:opacity-90 group/logo",
                                 open ? "gap-3 px-2" : "justify-center px-0"
                             )}
                         >
                             <div className={cn(
-                                "rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 transition-all duration-300 group-hover/logo:scale-105",
+                                "rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 transition-all duration-200 group-hover/logo:scale-105",
                                 open ? "w-10 h-10" : "w-8 h-8"
                             )}>
                                 <FlaskConical className={cn(
@@ -94,8 +94,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                     key={link.href}
                                     link={link}
                                     className={cn(
-                                        "px-2 rounded-xl transition-colors",
-                                        pathname === link.href ? "bg-primary/10 text-primary font-semibold" : "text-foreground-muted hover:bg-background-card-hover hover:text-foreground"
+                                        "px-2 rounded-xl transition-all duration-150",
+                                        pathname === link.href ? "bg-primary/10 text-primary font-semibold" : "text-foreground-muted hover:bg-white/5 hover:text-foreground"
                                     )}
                                 />
                             ))}
@@ -109,7 +109,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 href: "#",
                                 icon: <Settings className="h-5 w-5 shrink-0 text-foreground-subtle" />,
                             }}
-                            className="px-2 text-foreground-muted hover:text-foreground"
+                                className="px-2 text-foreground-muted hover:text-indigo-400 transition-all duration-150"
                         />
                         <div onClick={handleSignOut} className="cursor-pointer">
                             <SidebarLink
@@ -118,7 +118,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                     href: "#",
                                     icon: <LogOut className="h-5 w-5 shrink-0 text-foreground-subtle" />,
                                 }}
-                                className="px-2 text-foreground-muted hover:text-foreground"
+                                className="px-2 text-foreground-muted hover:text-indigo-400 transition-all duration-150"
                             />
                         </div>
 
@@ -144,14 +144,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col min-w-0 bg-background-surface overflow-hidden relative">
                 {/* Header / Top Bar */}
-                <header className="h-16 flex items-center justify-between px-8 bg-background/50 backdrop-blur-xl border-b border-border z-10">
+                <header className="h-16 flex items-center justify-between px-6 bg-background/70 backdrop-blur-xl border-b border-border z-10">
                     <div className="flex-1 max-w-xl">
                         <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle group-focus-within:text-primary transition-colors" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-400 transition-colors duration-150" />
                             <input
                                 type="text"
                                 placeholder="Search tasks, projects..."
-                                className="w-full bg-background-card border-none rounded-xl py-2 pl-11 pr-14 text-sm focus:ring-2 focus:ring-primary/20 transition-all border border-border"
+                                className="w-full bg-[#0B1220] border border-gray-700 rounded-xl py-2 pl-11 pr-14 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-150"
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 bg-background px-1.5 py-0.5 rounded border border-border">
                                 <Command className="w-3 h-3 text-foreground-subtle" />
@@ -162,7 +162,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
-                            <button className="p-2 rounded-xl bg-background-card hover:bg-background-card-hover text-foreground-subtle hover:text-foreground transition-all relative border border-border">
+                            <button className="p-2 rounded-xl bg-[#111827]/80 hover:bg-white/5 text-gray-400 hover:text-indigo-400 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] relative border border-gray-800">
                                 <Bell className="w-4 h-4" />
                                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-background-card" />
                             </button>

@@ -6,18 +6,19 @@
 
 @layer base {
   :root {
-    --background: #0b0f1a;
-    --background-surface: #121826;
-    --background-card: #1b2333;
-    --background-card-hover: #222c41;
-    --foreground: #f8fafc;
-    --foreground-muted: #cbd5e1;
-    --foreground-subtle: #b4c3d6;
-    --primary: #10b981; /* Emerald green like reference */
-    --primary-rgb: 16, 185, 129;
-    --primary-hover: #059669;
-    --primary-glow: rgba(16, 185, 129, 0.15);
-    --border: #232d3f;
+    --background: #0b1220;
+    --background-surface: #0f172a;
+    --background-card: #111827;
+    --background-card-hover: #172033;
+    --foreground: #f9fafb;
+    --foreground-muted: #9ca3af;
+    --foreground-subtle: #6b7280;
+    --primary: #6366f1;
+    --primary-rgb: 99, 102, 241;
+    --primary-hover: #4f46e5;
+    --primary-glow: rgba(99, 102, 241, 0.2);
+    --accent: #22d3ee;
+    --border: #1f2937;
     --border-light: #334155;
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -66,33 +67,34 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-white font-medium px-4 py-2.5 rounded-md 
-           hover:bg-primary-hover transition-all duration-150 
+    @apply bg-primary text-white font-medium px-4 py-2.5 rounded-lg 
+        hover:bg-primary-hover transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed
            focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
   }
 
   .btn-secondary {
-    @apply bg-transparent text-foreground border border-border 
-           font-medium px-4 py-2.5 rounded-md 
-           hover:bg-background-card hover:border-border-light 
-           transition-all duration-150
+    @apply bg-gray-800 text-foreground border border-border 
+        font-medium px-4 py-2.5 rounded-lg 
+        hover:bg-gray-700 hover:border-border-light 
+        transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
   }
 
   .btn-ghost {
-    @apply bg-transparent text-foreground-muted px-3 py-2 rounded-md 
+    @apply bg-transparent text-foreground-muted px-3 py-2 rounded-lg 
            hover:bg-background-card hover:text-foreground 
-           transition-all duration-150;
+        transition-all duration-150 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .card {
-    @apply bg-background-card border border-border rounded-lg p-5 transition-all duration-200;
+    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-6 backdrop-blur shadow-sm
+           hover:border-indigo-500/30 hover:shadow-lg transition-all duration-200;
   }
 
   .card-rich {
-    @apply bg-background-card border border-border rounded-xl p-6 shadow-xl shadow-black/20 
-           hover:border-primary/30 hover:shadow-primary/5 transition-all duration-300;
+    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-6 backdrop-blur shadow-sm 
+        hover:border-indigo-500/30 hover:shadow-lg transition-all duration-200;
   }
 
   .glass {
@@ -100,9 +102,9 @@
   }
 
   .input-field {
-    @apply bg-background-surface border border-border rounded-lg 
+    @apply bg-[#0B1220] border border-gray-700 rounded-xl 
            px-4 py-2.5 text-foreground placeholder:text-foreground-subtle
-           focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10
+        focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20
            transition-all duration-200 w-full text-sm;
   }
 
@@ -122,10 +124,10 @@
   }
 
   .tab-button {
-    @apply px-4 py-2.5 text-sm font-medium text-foreground-muted 
+    @apply px-4 py-3 text-sm font-medium text-foreground-muted 
            border-b-2 border-transparent
            hover:text-foreground hover:border-border-light
-           transition-all duration-150;
+        transition-all duration-150 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .tab-button-active {

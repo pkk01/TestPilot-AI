@@ -1,6 +1,6 @@
 'use client';
 
-import { Code2, FlaskConical, GitBranch, BarChart3 } from 'lucide-react';
+import { BarChart3, Code2, FlaskConical, GitBranch } from 'lucide-react';
 
 export type TabId = 'test_cases' | 'gherkin' | 'step_defs' | 'coverage';
 
@@ -61,7 +61,7 @@ export default function GenerationTabs({ activeTab, onTabChange, hasOutput }: Ge
                         onClick={() => onTabChange(id)}
                         className={`tab-button flex items-center gap-2 relative ${isActive ? 'tab-button-active' : ''}`}
                     >
-                        <Icon className="w-3.5 h-3.5" />
+                        <Icon className="w-5 h-5 text-gray-400 hover:text-indigo-400 transition-colors duration-150" />
                         <span>{label}</span>
                         {hasData && (
                             <span className="w-1.5 h-1.5 rounded-full bg-primary absolute top-1.5 right-1" />

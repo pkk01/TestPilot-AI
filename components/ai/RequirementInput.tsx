@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertCircle, Sparkles } from 'lucide-react';
-import { LoaderFive } from '../ui/loader';
 import { useState } from 'react';
+import { LoaderFive } from '../ui/loader';
 
 interface RequirementInputProps {
     onGenerate: (requirement: string) => void;
@@ -50,12 +50,12 @@ export default function RequirementInput({
     };
 
     return (
-        <div className="flex flex-col gap-4">
-            <div>
+        <div className="flex flex-col gap-4 card-rich bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 p-6">
+            <div className="text-center">
                 <label className="block text-sm font-semibold text-foreground mb-1.5">
                     Software Requirement
                 </label>
-                <p className="text-xs text-foreground-subtle mb-3">
+                <p className="text-sm text-gray-400 mb-4">
                     Paste your requirement, user story, or feature description below.
                 </p>
                 <div className="relative">
@@ -69,14 +69,14 @@ export default function RequirementInput({
                         disabled={isLoading}
                         rows={14}
                         className={`
-              w-full bg-background-surface border rounded-lg px-4 py-3
-              text-foreground placeholder:text-foreground-subtle
-              font-mono text-sm resize-none
-              focus:outline-none focus:ring-1 transition-colors duration-150
+                      w-full bg-[#0B1220] border rounded-xl px-4 py-3
+                      text-foreground placeholder:text-gray-500
+                      text-sm resize-none
+                      focus:outline-none focus:ring-2 transition-colors duration-150
               disabled:opacity-50 disabled:cursor-not-allowed
               ${isOverLimit
-                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                : 'border-border focus:border-primary focus:ring-primary'
+                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                            : 'border-gray-700 focus:border-indigo-500 focus:ring-indigo-500/20'
                             }
             `}
                     />
@@ -120,7 +120,7 @@ export default function RequirementInput({
                 <div className="card-rich p-4 animate-fade-in border-primary/20 bg-primary/5">
                     <div className="flex items-center gap-4">
                         <LoaderFive size="sm" text="" className="flex-shrink-0" />
-                        <p className="text-xs text-foreground font-medium">
+                        <p className="text-sm text-foreground font-medium">
                             AI is analyzing your requirement and generating artifacts...
                         </p>
                     </div>

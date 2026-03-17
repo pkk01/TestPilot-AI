@@ -1,8 +1,8 @@
 'use client';
 
 import { CoverageResult } from '@/types/generation.types';
+import { AlertTriangle, BarChart3, CheckCircle2, Lightbulb, XCircle } from 'lucide-react';
 import { LoaderFive } from '../ui/loader';
-import { CheckCircle2, XCircle, Lightbulb, BarChart3, AlertTriangle } from 'lucide-react';
 
 interface CoverageAnalysisProps {
     coverageResult: CoverageResult | null;
@@ -18,17 +18,17 @@ function getScoreColor(score: number): string {
 }
 
 function getBarColor(coverage: number): string {
-    if (coverage >= 80) return 'bg-emerald-500';
-    if (coverage >= 60) return 'bg-yellow-500';
-    if (coverage >= 40) return 'bg-orange-500';
-    return 'bg-red-500';
+    if (coverage >= 80) return 'bg-gradient-to-r from-indigo-500 to-cyan-400';
+    if (coverage >= 60) return 'bg-gradient-to-r from-indigo-500 to-cyan-400';
+    if (coverage >= 40) return 'bg-gradient-to-r from-indigo-500 to-cyan-400';
+    return 'bg-gradient-to-r from-indigo-500 to-cyan-400';
 }
 
 function getBarTrackColor(coverage: number): string {
-    if (coverage >= 80) return 'bg-emerald-500/15';
-    if (coverage >= 60) return 'bg-yellow-500/15';
-    if (coverage >= 40) return 'bg-orange-500/15';
-    return 'bg-red-500/15';
+    if (coverage >= 80) return 'bg-gray-800';
+    if (coverage >= 60) return 'bg-gray-800';
+    if (coverage >= 40) return 'bg-gray-800';
+    return 'bg-gray-800';
 }
 
 function getBarGlow(coverage: number): string {
@@ -96,9 +96,9 @@ function HeatmapBar({ scenario, coverage }: { scenario: string; coverage: number
                     {coverage}%
                 </span>
             </div>
-            <div className={`w-full h-2.5 rounded-full ${getBarTrackColor(coverage)} overflow-hidden`}>
+            <div className={`w-full h-2 rounded-full ${getBarTrackColor(coverage)} overflow-hidden`}>
                 <div
-                    className={`h-full rounded-full ${getBarColor(coverage)} ${getBarGlow(coverage)} transition-all duration-1000 ease-out`}
+                    className={`h-full rounded-full ${getBarColor(coverage)} ${getBarGlow(coverage)} transition-all duration-500 ease-out`}
                     style={{ width: `${coverage}%` }}
                 />
             </div>
@@ -163,11 +163,11 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
 
     return (
         <div className="flex-1 overflow-auto animate-fade-in">
-            <div className="p-5 space-y-5 max-w-3xl mx-auto">
+            <div className="p-6 space-y-6 max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center gap-2 mb-1">
                     <BarChart3 className="w-4 h-4 text-primary" />
-                    <h2 className="text-sm font-bold text-foreground">Test Coverage Analysis</h2>
+                    <h2 className="text-lg font-medium text-foreground">Test Coverage Analysis</h2>
                 </div>
 
                 {/* Score + Heatmap Row */}
@@ -184,7 +184,7 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
                     <div className="card">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="w-1 h-4 rounded-full bg-primary" />
-                            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                            <h3 className="text-sm font-medium text-foreground">
                                 Coverage Heatmap
                             </h3>
                         </div>
@@ -210,7 +210,7 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
                     <div className="card">
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-1 h-4 rounded-full bg-emerald-500" />
-                            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                            <h3 className="text-sm font-medium text-foreground">
                                 Covered Scenarios
                             </h3>
                             <span className="ml-auto text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
@@ -235,7 +235,7 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
                     <div className="card">
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-1 h-4 rounded-full bg-red-500" />
-                            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                            <h3 className="text-sm font-medium text-foreground">
                                 Missing Scenarios
                             </h3>
                             <span className="ml-auto text-[10px] font-mono text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">
@@ -262,13 +262,13 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
                     <div className="card">
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-1 h-4 rounded-full bg-yellow-500" />
-                            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                            <h3 className="text-sm font-medium text-foreground">
                                 Recommendations
                             </h3>
                         </div>
                         <ul className="space-y-2">
                             {recommendations.map((item, i) => (
-                                <li key={i} className="flex items-start gap-2">
+                                <li key={i} className="flex items-start gap-2 cursor-pointer hover:text-indigo-400 transition-all duration-150">
                                     <Lightbulb className="w-3.5 h-3.5 text-yellow-400 flex-shrink-0 mt-0.5" />
                                     <span className="text-xs text-foreground-muted">{item}</span>
                                 </li>
