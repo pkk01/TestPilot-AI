@@ -7,6 +7,11 @@ export const metadata: Metadata = {
     description:
         'Convert software requirements into manual test cases, Gherkin BDD scenarios, and Selenium Java step definitions using Groq AI.',
     keywords: ['test case generator', 'AI testing', 'Gherkin', 'Cucumber', 'Selenium', 'QA automation'],
+    icons: {
+        icon: '/testpilot-logo-hd.png',
+        shortcut: '/testpilot-logo-hd.png',
+        apple: '/testpilot-logo-hd.png',
+    },
 };
 
 export default function RootLayout({
