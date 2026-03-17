@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <SidebarLink
                                 link={{
                                     label: userName || "User",
-                                    href: "#",
+                                    href: "/profile",
                                     icon: (
                                         <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
                                             <UserCircle className="w-5 h-5 text-primary" />
