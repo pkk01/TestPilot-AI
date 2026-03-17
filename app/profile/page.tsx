@@ -11,7 +11,6 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import {
     Calendar,
-    Code2,
     FlaskConical,
     FolderOpen,
     GitBranch,
@@ -38,7 +37,6 @@ async function fetchProjects(): Promise<Project[]> {
 const typeConfig = {
     test_cases: { label: 'Test Cases', icon: FlaskConical, cls: 'badge-test-cases' },
     gherkin: { label: 'Gherkin', icon: GitBranch, cls: 'badge-gherkin' },
-    step_defs: { label: 'Step Defs', icon: Code2, cls: 'badge-step-defs' },
 };
 
 export default function ProfilePage() {
@@ -138,38 +136,6 @@ export default function ProfilePage() {
                     {/* Trend Graph */}
                     <div className="col-span-12 lg:col-span-4 h-[400px]">
                         <GenerationTrend generations={allHistory} />
-                    </div>
-
-                    {/* Recent Activity Mini-List */}
-                    <div className="col-span-12">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
-                            <span className="text-xs text-foreground-subtle uppercase font-bold tracking-widest">Last 10 Actions</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {allHistory.slice(0, 10).map((gen) => {
-                                const config = typeConfig[gen.generation_type as keyof typeof typeConfig];
-                                const Icon = config.icon;
-                                return (
-                                    <div key={gen.id} className="card-rich py-4 px-5 flex items-center gap-4 group hover:border-primary/30 transition-all">
-                                        <div className="w-10 h-10 rounded-xl bg-background-surface border border-border flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
-                                            <Icon className="w-5 h-5 text-foreground-muted group-hover:text-primary transition-colors" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-bold text-foreground truncate mb-0.5">
-                                                {gen.requirement_text}
-                                            </p>
-                                            <p className="text-[10px] text-foreground-subtle font-medium uppercase tracking-wider">
-                                                {format(new Date(gen.created_at), 'MMM d, yyyy · HH:mm')}
-                                            </p>
-                                        </div>
-                                        <span className={`badge text-[9px] px-2 py-0.5 rounded-full uppercase tracking-tighter font-black ${config.cls}`}>
-                                            {config.label}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
                     </div>
                 </div>
             </div>

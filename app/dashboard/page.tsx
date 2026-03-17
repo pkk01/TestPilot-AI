@@ -4,9 +4,8 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Generation } from '@/types/generation.types';
 import { Project } from '@/types/project.types';
 import { useQuery } from '@tanstack/react-query';
-import { formatDistanceToNow, subDays, startOfDay, isAfter, format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import {
-    ArrowUpRight,
     Code2,
     FlaskConical,
     FolderOpen,
@@ -17,18 +16,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-import { GenerationHeatmap } from '@/components/dashboard/GenerationHeatmap';
-import { GenerationTrend } from '@/components/dashboard/GenerationTrend';
 import { StatCard } from '@/components/dashboard/StatCard';
 
 async function fetchHistory(): Promise<Generation[]> {
     const res = await fetch('/api/history?limit=5');
-    const data = await res.json();
-    return data.success ? data.data : [];
-}
-
-async function fetchAllHistory(): Promise<Generation[]> {
-    const res = await fetch('/api/history?limit=50');
     const data = await res.json();
     return data.success ? data.data : [];
 }
@@ -48,7 +39,6 @@ const typeConfig = {
 
 export default function DashboardPage() {
     const { data: history = [] } = useQuery({ queryKey: ['history-recent'], queryFn: fetchHistory });
-    const { data: allHistory = [] } = useQuery({ queryKey: ['history-all'], queryFn: fetchAllHistory });
     const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects });
 
     const stats = [
@@ -88,17 +78,8 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="grid grid-cols-12 gap-6">
-                    {/* Analytics Section */}
-                    <div className="col-span-12 lg:col-span-4 h-[350px]">
-                        <GenerationHeatmap generations={allHistory} />
-                    </div>
-
-                    <div className="col-span-12 lg:col-span-3 h-[350px]">
-                        <GenerationTrend generations={allHistory} />
-                    </div>
-
                     {/* Recent Generations List */}
-                    <div className="col-span-12 lg:col-span-5 flex flex-col">
+                    <div className="col-span-12 flex flex-col">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-sm font-bold text-foreground">Recent Projects</h2>
                             <Link href="/history" className="text-xs text-primary font-bold hover:underline">
