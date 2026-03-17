@@ -1,7 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import { AlertTriangle, Clock, FileWarning, RefreshCcw } from "lucide-react";
+import { useRef } from "react";
 
 const painPoints = [
     { icon: Clock, text: "Hours spent writing repetitive test cases" },
@@ -17,7 +17,7 @@ export default function ProblemSection() {
     return (
         <section className="relative py-32 overflow-hidden">
             {/* Gradient separator */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
 
             <div ref={ref} className="max-w-5xl mx-auto px-6 text-center">
                 <motion.div
@@ -65,14 +65,14 @@ export default function ProblemSection() {
                     transition={{ duration: 0.7, delay: 0.6 }}
                     className="mt-16 inline-block"
                 >
-                    <div className="relative px-8 py-5 rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 backdrop-blur-xl">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl" />
+                    <div className="relative px-8 py-5 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 backdrop-blur-xl">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 rounded-2xl blur-xl" />
                         <div className="relative flex items-center gap-3">
                             <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
                             <span className="text-lg font-semibold text-white">
                                 AI Generated Test Cases →
                             </span>
-                            <span className="text-lg text-purple-300 font-bold">Ready in seconds</span>
+                            <span className="text-lg text-indigo-300 font-bold">Ready in seconds</span>
                         </div>
                     </div>
                 </motion.div>

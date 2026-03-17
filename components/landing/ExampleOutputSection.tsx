@@ -1,25 +1,25 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const codeLines = [
-    { text: "Feature: Login functionality", color: "text-purple-400", indent: 0 },
+    { text: "Feature: Login functionality", color: "text-indigo-400", indent: 0 },
     { text: "", color: "", indent: 0 },
     { text: "  Scenario: Successful login with valid credentials", color: "text-cyan-400", indent: 0 },
     { text: "    Given the user is on the login page", color: "text-green-400", indent: 0 },
     { text: '    And the user enters username "testuser@example.com"', color: "text-green-400", indent: 0 },
     { text: '    And the user enters password "SecurePass123!"', color: "text-green-400", indent: 0 },
     { text: '    When the user clicks the "Login" button', color: "text-yellow-400", indent: 0 },
-    { text: "    Then the user should be redirected to the dashboard", color: "text-pink-400", indent: 0 },
-    { text: '    And the page title should contain "Dashboard"', color: "text-pink-400", indent: 0 },
+    { text: "    Then the user should be redirected to the dashboard", color: "text-blue-400", indent: 0 },
+    { text: '    And the page title should contain "Dashboard"', color: "text-blue-400", indent: 0 },
     { text: "", color: "", indent: 0 },
     { text: "  Scenario: Failed login with invalid password", color: "text-cyan-400", indent: 0 },
     { text: "    Given the user is on the login page", color: "text-green-400", indent: 0 },
     { text: '    And the user enters username "testuser@example.com"', color: "text-green-400", indent: 0 },
     { text: '    And the user enters password "WrongPassword"', color: "text-green-400", indent: 0 },
     { text: '    When the user clicks the "Login" button', color: "text-yellow-400", indent: 0 },
-    { text: '    Then an error message "Invalid credentials" should appear', color: "text-pink-400", indent: 0 },
-    { text: "    And the user should remain on the login page", color: "text-pink-400", indent: 0 },
+    { text: '    Then an error message "Invalid credentials" should appear', color: "text-blue-400", indent: 0 },
+    { text: "    And the user should remain on the login page", color: "text-blue-400", indent: 0 },
 ];
 
 export default function ExampleOutputSection() {
@@ -43,7 +43,7 @@ export default function ExampleOutputSection() {
 
     return (
         <section id="example-output" className="relative py-32">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
             <div ref={ref} className="max-w-5xl mx-auto px-6">
                 <motion.div
@@ -52,12 +52,12 @@ export default function ExampleOutputSection() {
                     transition={{ duration: 0.7 }}
                     className="text-center mb-16"
                 >
-                    <span className="text-sm font-semibold text-pink-400 tracking-widest uppercase mb-4 block">
+                    <span className="text-sm font-semibold text-blue-400 tracking-widest uppercase mb-4 block">
                         Example Output
                     </span>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         See{" "}
-                        <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                             AI in Action
                         </span>
                     </h2>
@@ -74,7 +74,7 @@ export default function ExampleOutputSection() {
                     className="relative"
                 >
                     {/* Glow behind */}
-                    <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/10 via-pink-600/10 to-cyan-600/10 rounded-3xl blur-2xl" />
+                    <div className="absolute -inset-4 bg-gradient-to-r from-indigo-600/10 via-blue-600/10 to-cyan-600/10 rounded-3xl blur-2xl" />
 
                     <div className="relative rounded-2xl border border-white/10 overflow-hidden bg-[#0d1117]">
                         {/* Editor titlebar */}
@@ -115,7 +115,7 @@ export default function ExampleOutputSection() {
                             {visibleLines >= codeLines.length && (
                                 <div className="flex">
                                     <span className="w-8 mr-4" />
-                                    <span className="w-2 h-5 bg-purple-400 animate-pulse" />
+                                    <span className="w-2 h-5 bg-indigo-400 animate-pulse" />
                                 </div>
                             )}
                         </div>

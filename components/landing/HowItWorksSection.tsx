@@ -1,7 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
+import { Brain, FileCheck, Upload } from "lucide-react";
 import { useRef } from "react";
-import { Upload, Brain, FileCheck } from "lucide-react";
 
 const steps = [
     {
@@ -9,14 +9,14 @@ const steps = [
         step: "01",
         title: "Upload Requirements",
         desc: "Upload your requirement document, PRD, user story, or simply paste your feature description.",
-        gradient: "from-purple-500 to-violet-500",
+        gradient: "from-indigo-500 to-blue-500",
     },
     {
         icon: Brain,
         step: "02",
         title: "AI Analyzes Flows",
         desc: "Our AI engine analyzes functionality, maps system flows, and identifies all testable scenarios.",
-        gradient: "from-pink-500 to-rose-500",
+        gradient: "from-cyan-500 to-blue-500",
     },
     {
         icon: FileCheck,
@@ -63,7 +63,7 @@ export default function HowItWorksSection() {
                             initial={{ scaleX: 0 }}
                             animate={isInView ? { scaleX: 1 } : {}}
                             transition={{ duration: 1, delay: 0.5 }}
-                            className="h-full bg-gradient-to-r from-purple-500/50 via-pink-500/50 to-cyan-500/50 origin-left"
+                            className="h-full bg-gradient-to-r from-indigo-500/50 via-blue-500/50 to-cyan-500/50 origin-left"
                         />
                     </div>
 
@@ -77,7 +77,7 @@ export default function HowItWorksSection() {
                         >
                             {/* Step circle */}
                             <div className="relative mx-auto mb-6">
-                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} mx-auto flex items-center justify-center shadow-2xl shadow-purple-500/20`}>
+                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.gradient} mx-auto flex items-center justify-center shadow-2xl shadow-indigo-500/20`}>
                                     <step.icon className="w-8 h-8 text-white" />
                                 </div>
                                 <div className={`absolute -top-2 -right-2 w-7 h-7 rounded-full bg-[#030712] border-2 border-white/20 flex items-center justify-center`}>

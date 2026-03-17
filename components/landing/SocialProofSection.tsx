@@ -1,7 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
+import { Quote, Star } from "lucide-react";
 import { useRef } from "react";
-import { Star, Quote } from "lucide-react";
 
 const testimonials = [
     {
@@ -48,7 +48,7 @@ export default function SocialProofSection() {
                     </span>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         Trusted by{" "}
-                        <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                             Modern QA Teams
                         </span>
                     </h2>
@@ -81,7 +81,7 @@ export default function SocialProofSection() {
                             transition={{ duration: 0.5, delay: 0.2 + i * 0.15 }}
                             className="group p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-500"
                         >
-                            <Quote className="w-8 h-8 text-purple-500/30 mb-4" />
+                            <Quote className="w-8 h-8 text-blue-500/30 mb-4" />
                             <p className="text-gray-300 leading-relaxed mb-6 text-sm">
                                 &ldquo;{t.quote}&rdquo;
                             </p>

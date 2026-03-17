@@ -42,19 +42,19 @@ const socialLinks = [
 export default function FooterSection() {
     return (
         <footer className="relative border-t border-white/5 bg-[#020408]">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
 
             <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
                 <div className="grid md:grid-cols-5 gap-12 mb-12">
                     {/* Brand */}
                     <div className="md:col-span-2">
                         <Link href="/" className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                                 <FlaskConical className="w-5 h-5 text-white" />
                             </div>
                             <div className="flex items-center">
                                 <span className="text-xl font-bold text-white">Test</span>
-                                <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                <span className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                                     Pilot
                                 </span>
                                 <span className="text-xl font-bold text-cyan-400 ml-1">AI</span>

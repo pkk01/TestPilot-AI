@@ -22,8 +22,8 @@ export default function ParticleBackground() {
         }[] = [];
 
         const colors = [
-            "rgba(139, 92, 246, ",  // purple
-            "rgba(236, 72, 153, ",  // pink
+            "rgba(99, 102, 241, ",  // indigo
+            "rgba(59, 130, 246, ",  // blue
             "rgba(59, 130, 246, ",  // blue
             "rgba(6, 182, 212, ",   // cyan
         ];
@@ -76,7 +76,7 @@ export default function ParticleBackground() {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.06 * (1 - dist / 120)})`;
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.06 * (1 - dist / 120)})`;
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }

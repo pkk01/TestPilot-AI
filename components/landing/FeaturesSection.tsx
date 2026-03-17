@@ -1,29 +1,29 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import {
-    Cpu,
+    BarChart3,
     Code2,
+    Cpu,
+    Download,
     FileCode2,
     Search,
-    BarChart3,
-    Download,
 } from "lucide-react";
+import { useRef } from "react";
 
 const features = [
     {
         icon: Cpu,
         title: "AI Test Case Generator",
         desc: "Automatically generate comprehensive test cases from requirements, user stories, or PRDs in seconds.",
-        gradient: "from-purple-500 to-violet-500",
-        glow: "purple",
+        gradient: "from-indigo-500 to-blue-500",
+        glow: "indigo",
     },
     {
         icon: Code2,
         title: "Selenium Script Generation",
         desc: "Get ready-to-run Selenium Java automation scripts generated from your test scenarios.",
-        gradient: "from-pink-500 to-rose-500",
-        glow: "pink",
+        gradient: "from-cyan-500 to-blue-500",
+        glow: "cyan",
     },
     {
         icon: FileCode2,
@@ -56,8 +56,7 @@ const features = [
 ];
 
 const glowColors: Record<string, string> = {
-    purple: "group-hover:shadow-purple-500/20",
-    pink: "group-hover:shadow-pink-500/20",
+    indigo: "group-hover:shadow-indigo-500/20",
     cyan: "group-hover:shadow-cyan-500/20",
     amber: "group-hover:shadow-amber-500/20",
     emerald: "group-hover:shadow-emerald-500/20",
@@ -70,7 +69,7 @@ export default function FeaturesSection() {
 
     return (
         <section id="features" className="relative py-32">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink-500/30 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
 
             <div ref={ref} className="max-w-7xl mx-auto px-6">
                 <motion.div
@@ -79,12 +78,12 @@ export default function FeaturesSection() {
                     transition={{ duration: 0.7 }}
                     className="text-center mb-16"
                 >
-                    <span className="text-sm font-semibold text-purple-400 tracking-widest uppercase mb-4 block">
+                    <span className="text-sm font-semibold text-indigo-400 tracking-widest uppercase mb-4 block">
                         Features
                     </span>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         Everything You Need for{" "}
-                        <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                             AI-Powered QA
                         </span>
                     </h2>

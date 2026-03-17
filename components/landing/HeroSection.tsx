@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Sparkles, Shield, Zap, Code2 } from "lucide-react";
+import { ArrowRight, Code2, Play, Shield, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 
 const floatingCards = [
@@ -28,8 +28,8 @@ export default function HeroSection() {
     return (
         <section id="home" className="relative min-h-screen flex items-center pt-24 pb-20 overflow-hidden">
             {/* Radial glow */}
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-radial from-purple-600/20 via-transparent to-transparent rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-radial from-pink-600/10 via-transparent to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-radial from-indigo-600/20 via-transparent to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-radial from-blue-600/10 via-transparent to-transparent rounded-full blur-3xl pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center w-full">
                 {/* Left Content */}
@@ -44,7 +44,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium mb-8"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-medium mb-8"
                     >
                         <Sparkles className="w-4 h-4" />
                         AI-Powered QA Automation
@@ -54,7 +54,7 @@ export default function HeroSection() {
                         <span className="text-white">AI That Writes</span>
                         <br />
                         <span className="text-white">Your </span>
-                        <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                        <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
                             Test Cases.
                         </span>
                     </h1>
@@ -66,7 +66,7 @@ export default function HeroSection() {
                     <div className="flex flex-wrap gap-4">
                         <Link
                             href="/signup"
-                            className="group px-7 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-base hover:from-purple-500 hover:to-pink-500 transition-all shadow-2xl shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95 flex items-center gap-2"
+                            className="group px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-semibold text-base hover:from-indigo-500 hover:to-cyan-500 transition-all shadow-2xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-105 active:scale-95 flex items-center gap-2"
                         >
                             Try TestPilot AI
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -93,7 +93,7 @@ export default function HeroSection() {
                             { value: "99%", label: "Accuracy" },
                         ].map((stat) => (
                             <div key={stat.label}>
-                                <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
                                     {stat.value}
                                 </div>
                                 <div className="text-sm text-gray-500">{stat.label}</div>
@@ -120,12 +120,12 @@ export default function HeroSection() {
                                 scale: { duration: 4, repeat: Infinity },
                                 rotate: { duration: 20, repeat: Infinity, ease: "linear" },
                             }}
-                            className="w-64 h-64 rounded-full bg-gradient-to-br from-purple-600/30 via-pink-500/20 to-cyan-500/30 blur-xl"
+                            className="w-64 h-64 rounded-full bg-gradient-to-br from-indigo-600/30 via-blue-500/20 to-cyan-500/30 blur-xl"
                         />
                         <motion.div
                             animate={{ scale: [1, 1.1, 1] }}
                             transition={{ duration: 3, repeat: Infinity }}
-                            className="absolute w-40 h-40 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 shadow-2xl shadow-purple-500/50 flex items-center justify-center"
+                            className="absolute w-40 h-40 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-2xl shadow-indigo-500/50 flex items-center justify-center"
                         >
                             <Sparkles className="w-16 h-16 text-white/90" />
                         </motion.div>
@@ -177,16 +177,16 @@ export default function HeroSection() {
                     <motion.div
                         animate={{ y: [0, -10, 0], rotate: [0, -10, 0] }}
                         transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                        className="absolute -bottom-4 right-24 p-3 rounded-xl bg-pink-500/10 border border-pink-500/20"
+                        className="absolute -bottom-4 right-24 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20"
                     >
-                        <Zap className="w-6 h-6 text-pink-400" />
+                        <Zap className="w-6 h-6 text-blue-400" />
                     </motion.div>
                     <motion.div
                         animate={{ y: [0, -14, 0] }}
                         transition={{ duration: 6, repeat: Infinity, delay: 1 }}
-                        className="absolute top-1/3 -left-12 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20"
+                        className="absolute top-1/3 -left-12 p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20"
                     >
-                        <Code2 className="w-6 h-6 text-purple-400" />
+                        <Code2 className="w-6 h-6 text-indigo-400" />
                     </motion.div>
                 </motion.div>
             </div>

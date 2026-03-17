@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { FlaskConical, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const navLinks = [
     { label: "Home", href: "#home" },
@@ -29,20 +29,20 @@ export default function Navbar() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className={`fixed top-0 w-full z-50 transition-all duration-300 ${
                 scrolled
-                    ? "bg-[#030712]/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-purple-500/5"
+                    ? "bg-[#030712]/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-indigo-500/5"
                     : "bg-transparent"
             }`}
         >
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-shadow">
                         <FlaskConical className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex flex-col">
                         <div className="flex items-center">
                             <span className="text-xl font-bold text-white tracking-tight">Test</span>
-                            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
+                            <span className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
                                 Pilot
                             </span>
                             <span className="text-xl font-bold text-cyan-400 ml-1 tracking-tight">AI</span>
@@ -73,7 +73,7 @@ export default function Navbar() {
                     </Link>
                     <Link
                         href="/signup"
-                        className="px-5 py-2.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95"
+                        className="px-5 py-2.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white hover:from-indigo-500 hover:to-cyan-500 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-105 active:scale-95"
                     >
                         Get Started
                     </Link>
@@ -114,7 +114,7 @@ export default function Navbar() {
                                 </Link>
                                 <Link
                                     href="/signup"
-                                    className="px-5 py-3 text-center text-sm font-semibold rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                                    className="px-5 py-3 text-center text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white"
                                 >
                                     Get Started
                                 </Link>

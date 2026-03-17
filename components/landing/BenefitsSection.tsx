@@ -1,7 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
+import { Brain, ShieldCheck, Workflow, Zap } from "lucide-react";
 import { useRef } from "react";
-import { Zap, ShieldCheck, Brain, Workflow } from "lucide-react";
 
 const benefits = [
     {
@@ -20,7 +20,7 @@ const benefits = [
         icon: Brain,
         title: "AI-Powered QA",
         desc: "Leverage advanced AI to understand requirements and generate intelligent test scenarios.",
-        gradient: "from-purple-500 to-pink-500",
+        gradient: "from-indigo-500 to-cyan-500",
     },
     {
         icon: Workflow,
