@@ -68,6 +68,10 @@
 }
 
 @layer components {
+  .font-display {
+    font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  }
+
   .btn-primary {
     @apply bg-primary text-white font-medium px-4 py-2.5 rounded-lg 
         hover:bg-primary-hover transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]

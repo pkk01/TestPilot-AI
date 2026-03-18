@@ -89,7 +89,7 @@ export default function DashboardPage() {
         <DashboardLayout>
             <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
                 <section className="space-y-5">
-                    <h2 className="text-[34px] md:text-[42px] leading-tight font-light text-foreground tracking-tight">What are you testing today?</h2>
+                    <h2 className="font-display text-[32px] md:text-[40px] leading-tight font-medium text-foreground tracking-tight">What are you testing today?</h2>
 
                     <div className="rounded-2xl border border-border bg-background-card px-3 py-2 flex items-end gap-2">
                         <textarea
@@ -158,7 +158,7 @@ export default function DashboardPage() {
                             {latestGeneration ? (
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-4">
                                     <div className="min-w-0">
-                                        <p className="text-[15px] font-medium text-foreground truncate">{latestProjectName}</p>
+                                        <p className="font-display text-[15px] font-medium text-foreground truncate">{latestProjectName}</p>
                                         <p className="text-[13px] text-foreground-muted mt-1 capitalize">Generated {latestGeneration.generation_type.replace('_', ' ')}</p>
                                         <p className="text-[11px] text-foreground-subtle mt-1">{formatDistanceToNow(new Date(latestGeneration.created_at), { addSuffix: true })}</p>
                                     </div>

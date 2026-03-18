@@ -59,16 +59,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             )}
                         >
                             <div className={cn(
-                                "rounded-md border border-border bg-background-card flex items-center justify-center shrink-0",
+                                "rounded-md border border-primary/40 bg-primary/15 flex items-center justify-center shrink-0",
                                 open ? "w-8 h-8" : "w-7 h-7"
                             )}>
                                 <FlaskConical className={cn(
-                                    "text-foreground",
+                                    "text-primary",
                                     open ? "w-4 h-4" : "w-3.5 h-3.5"
                                 )} />
                             </div>
                             {open && (
-                                <span className="text-[15px] font-medium text-foreground tracking-tight truncate">TestPilot</span>
+                                <span className="font-display text-[15px] font-semibold tracking-tight truncate">
+                                    <span className="text-foreground">Test</span>
+                                    <span className="text-primary">Pilot</span>
+                                    <span className="text-foreground"> AI</span>
+                                </span>
                             )}
                         </Link>
 
@@ -125,7 +129,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <main className="flex-1 flex flex-col min-w-0 bg-background-surface overflow-hidden relative">
                 <header className="h-14 flex items-center px-6 bg-background/70 backdrop-blur-md border-b border-border z-10 relative">
-                    <h1 className="text-[22px] font-normal tracking-tight text-foreground">Dashboard</h1>
+                    <h1 className="font-display text-[22px] font-medium tracking-tight text-foreground">Dashboard</h1>
 
                     <button
                         type="button"

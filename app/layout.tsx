@@ -1,15 +1,21 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
+import { Figtree, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const figtreeSans = Figtree({
     subsets: ['latin'],
     variable: '--font-sans',
     display: 'swap',
 });
 
-const jetBrainsMono = JetBrains_Mono({
+const figtreeDisplay = Figtree({
+    subsets: ['latin'],
+    variable: '--font-display',
+    display: 'swap',
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
     subsets: ['latin'],
     variable: '--font-mono',
     weight: ['400', '500'],
@@ -35,7 +41,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-            <body className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}>
+            <body className={`${figtreeSans.variable} ${figtreeDisplay.variable} ${ibmPlexMono.variable}`}>
                 <Providers>
                     {children}
                 </Providers>
