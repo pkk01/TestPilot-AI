@@ -20,6 +20,8 @@ interface GenerationState {
 
 function GenerateContent() {
     const searchParams = useSearchParams();
+    const initialRequirement = searchParams.get('requirement') ?? '';
+    const autoGenerate = searchParams.get('autoGenerate') === '1';
     const [activeTab, setActiveTab] = useState<TabId>('test_cases');
     const [selectedProjectId, setSelectedProjectId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -205,6 +207,8 @@ function GenerateContent() {
                             onGenerate={handleGenerate}
                             isLoading={isLoading}
                             activeTab={activeTab}
+                            initialRequirement={initialRequirement}
+                            autoGenerate={autoGenerate}
                         />
 
                         {error && (

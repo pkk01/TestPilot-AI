@@ -11,21 +11,18 @@ const config: Config = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#10B981", // Emerald 500
-                    hover: "#059669",
-                    foreground: "#000000",
+                    DEFAULT: "#6366F1",
+                    hover: "#4F46E5",
+                    foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#1B2333",
-                    foreground: "#F8FAFC",
+                    DEFAULT: "#64748B",
+                    foreground: "#ffffff",
                 },
                 background: {
-                    DEFAULT: "#0B0F1A",
-                    card: {
-                        DEFAULT: "#1B2333",
-                        hover: "#222C41",
-                    },
-                    surface: "#121826",
+                    DEFAULT: "#0F172A",
+                    card: "#1E293B",
+                    surface: "#111827",
                 },
                 foreground: {
                     DEFAULT: "#F8FAFC",
@@ -33,23 +30,23 @@ const config: Config = {
                     subtle: "#B4C3D6",
                 },
                 border: {
-                    DEFAULT: "#232D3F",
-                    light: "#334155",
+                    DEFAULT: "#334155",
+                    light: "#475569",
                 },
                 destructive: {
                     DEFAULT: "#EF4444",
                     foreground: "#ffffff",
                 },
                 success: {
-                    DEFAULT: "#10B981",
+                    DEFAULT: "#22C55E",
                 },
                 warning: {
                     DEFAULT: "#F59E0B",
                 },
             },
             fontFamily: {
-                sans: ["Inter", "system-ui", "sans-serif"],
-                mono: ["JetBrains Mono", "Fira Code", "monospace"],
+                sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+                mono: ["var(--font-mono)", "ui-monospace", "monospace"],
             },
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

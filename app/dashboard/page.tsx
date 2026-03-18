@@ -1,29 +1,21 @@
 'use client';
 
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Generation } from '@/types/generation.types';
 import { Project } from '@/types/project.types';
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import {
-    BrainCircuit,
-    Code2,
-    FileCheck2,
+    ArrowRight,
+    ArrowUp,
+    Dot,
     FlaskConical,
-    FolderOpen,
     GitBranch,
-    Lightbulb,
-    PlayCircle,
-    Plus,
-    Rocket,
     Sparkles,
-    TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-
-import { StatCard } from '@/components/dashboard/StatCard';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 async function fetchHistory(): Promise<Generation[]> {
     const res = await fetch('/api/history?limit=5');
@@ -38,29 +30,23 @@ async function fetchProjects(): Promise<Project[]> {
 }
 
 const typeConfig = {
-    test_cases: { label: 'Test Cases', icon: FlaskConical, cls: 'badge-test-cases' },
-    gherkin: { label: 'Gherkin', icon: GitBranch, cls: 'badge-gherkin' },
-    step_defs: { label: 'Step Defs', icon: Code2, cls: 'badge-step-defs' },
+    test_cases: { label: 'TEST CASES', icon: FlaskConical, dot: 'text-primary' },
+    gherkin: { label: 'GHERKIN', icon: GitBranch, dot: 'text-cyan-400' },
+    step_defs: { label: 'STEP DEFS', icon: Sparkles, dot: 'text-primary' },
 };
-
-function getHealthBadge(createdAt: string) {
-    const hoursAgo = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60);
-    if (hoursAgo <= 24) return { label: 'Good', cls: 'bg-green-500/10 text-green-400' };
-    if (hoursAgo <= 72) return { label: 'Medium', cls: 'bg-yellow-500/10 text-yellow-400' };
-    return { label: 'Poor', cls: 'bg-red-500/10 text-red-400' };
-}
-
 
 export default function DashboardPage() {
     const [heroInput, setHeroInput] = useState('');
+    const router = useRouter();
+    const heroInputRef = useRef<HTMLTextAreaElement | null>(null);
     const { data: history = [] } = useQuery({ queryKey: ['history-recent'], queryFn: fetchHistory });
     const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: fetchProjects });
 
     const stats = [
-        { label: 'Total Projects', value: projects.length, trend: '+12%', icon: FolderOpen, color: 'text-emerald-400' },
-        { label: 'Generations', value: history.length >= 5 ? '5+' : history.length, trend: '+24%', icon: Sparkles, color: 'text-primary' },
-        { label: 'Test Cases', value: history.filter(g => g.generation_type === 'test_cases').length, trend: 'stable', icon: FlaskConical, color: 'text-violet-400' },
-        { label: 'Feature Files', value: history.filter(g => g.generation_type === 'gherkin').length, trend: '+5%', icon: GitBranch, color: 'text-orange-400' },
+        { label: 'Total Projects', value: projects.length, trend: '↑12%', tone: 'text-primary' },
+        { label: 'Generations', value: history.length >= 5 ? '5+' : history.length, trend: '↑24%', tone: 'text-primary' },
+        { label: 'Test Cases', value: history.filter(g => g.generation_type === 'test_cases').length, trend: 'stable', tone: 'text-yellow-400' },
+        { label: 'Feature Files', value: history.filter(g => g.generation_type === 'gherkin').length, trend: '↑5%', tone: 'text-primary' },
     ];
 
     const latestGeneration = history[0] || null;
@@ -74,230 +60,179 @@ export default function DashboardPage() {
     const coveragePercentage = history.length === 0 ? 0 : Math.min(100, Math.round((testCaseCount / Math.max(history.length, 1)) * 100));
     const missingScenarios = Math.max(0, gherkinCount * 3 - testCaseCount);
 
+    const historyWithProject = history.map((generation) => ({
+        ...generation,
+        projectName: projects.find((project) => project.id === generation.project_id)?.name || 'Personal Project',
+    }));
+
+    useEffect(() => {
+        const textareaElement = heroInputRef.current;
+        if (!textareaElement) return;
+
+        textareaElement.style.height = '0px';
+        textareaElement.style.height = `${textareaElement.scrollHeight}px`;
+    }, [heroInput]);
+
+    const handleHeroSend = () => {
+        const requirement = heroInput.trim();
+        if (!requirement) return;
+
+        const params = new URLSearchParams({
+            requirement,
+            autoGenerate: '1',
+        });
+
+        router.push(`/generate?${params.toString()}`);
+    };
+
     return (
         <DashboardLayout>
-            <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 animate-fade-slide-in">
-                {/* Header */}
-                <div className="flex items-end justify-between">
-                    <div>
-                        <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">Dashboard</h1>
-                        <p className="text-sm text-gray-400">
-                            Plan, prioritize, and accomplish your tasks with ease.
-                        </p>
+            <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
+                <section className="space-y-5">
+                    <h2 className="text-[34px] md:text-[42px] leading-tight font-light text-foreground tracking-tight">What are you testing today?</h2>
+
+                    <div className="rounded-2xl border border-border bg-background-card px-3 py-2 flex items-end gap-2">
+                        <textarea
+                            ref={heroInputRef}
+                            value={heroInput}
+                            onChange={(event) => setHeroInput(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' && !event.shiftKey) {
+                                    event.preventDefault();
+                                    handleHeroSend();
+                                }
+                            }}
+                            placeholder="Paste requirement, story, or flow"
+                            rows={1}
+                            className="w-full min-h-[38px] resize-none overflow-hidden bg-transparent px-2 py-1.5 text-[15px] leading-6 text-foreground placeholder:text-foreground-subtle focus:outline-none"
+                        />
+
+                        <button
+                            type="button"
+                            onClick={handleHeroSend}
+                            disabled={heroInput.trim().length === 0}
+                            className="h-9 w-9 flex items-center justify-center rounded-xl bg-primary text-white border border-primary/50 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-hover transition-colors duration-150"
+                            aria-label="Send requirement"
+                        >
+                            <ArrowUp className="w-4 h-4" />
+                        </button>
                     </div>
-                    <div className="flex gap-3">
-                        <Link href="/projects" className="btn-secondary flex items-center gap-2 py-2 px-5 text-xs font-medium uppercase tracking-wider">
-                            Import Data
+
+                    <div className="flex flex-wrap items-center gap-6 text-[13px]">
+                        <Link href="/generate" className="inline-flex items-center gap-1.5 text-primary hover:text-primary-hover transition-colors duration-150">
+                            <span className="text-[10px]">⬡</span>
+                            Generate Test Cases
                         </Link>
-                        <Link href="/generate" className="btn-primary flex items-center gap-2 py-2 px-5 text-xs font-medium uppercase tracking-wider">
-                            <Plus className="w-4 h-4" />
-                            Add Project
+                        <Link href="/generate" className="inline-flex items-center gap-1.5 text-foreground-muted hover:text-foreground transition-colors duration-150">
+                            <span className="text-[10px]">⬡</span>
+                            Gherkin
+                        </Link>
+                        <Link href="/generate" className="inline-flex items-center gap-1.5 text-foreground-muted hover:text-foreground transition-colors duration-150">
+                            <span className="text-[10px]">⬡</span>
+                            Coverage Analysis
                         </Link>
                     </div>
-                </div>
+                </section>
 
-                {/* Hero + Quick Actions */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    <Card className="xl:col-span-2 bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border-indigo-500/20 hover:border-indigo-500/40 transition-all duration-200">
-                        <CardHeader>
-                            <CardTitle className="text-2xl font-semibold tracking-tight">Your QA assistant is ready. What do you want to test today?</CardTitle>
-                            <CardDescription>Describe your requirement and jump straight into generation workflows.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <textarea
-                                value={heroInput}
-                                onChange={(event) => setHeroInput(event.target.value)}
-                                placeholder="Paste user story, acceptance criteria, or feature flow..."
-                                rows={5}
-                                className="w-full rounded-xl bg-[#0B1220] border border-gray-700 px-4 py-3 text-sm text-foreground placeholder:text-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-150"
-                            />
-                            <div className="flex flex-wrap gap-3">
-                                <Link href="/generate" className="btn-primary inline-flex items-center gap-2">
-                                    <FileCheck2 className="w-4 h-4" />
-                                    Generate Test Cases
-                                </Link>
-                                <Link href="/generate" className="btn-secondary inline-flex items-center gap-2">
-                                    <GitBranch className="w-4 h-4" />
-                                    Generate Gherkin
-                                </Link>
-                                <Link href="/generate" className="btn-secondary inline-flex items-center gap-2">
-                                    <BrainCircuit className="w-4 h-4" />
-                                    Analyze Coverage
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="hover:border-indigo-500/30 transition-all duration-200">
-                        <CardHeader>
-                            <CardTitle>Quick Actions</CardTitle>
-                            <CardDescription>Fast access to your most-used QA workflows.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <Link href="/generate" className="btn-primary w-full justify-center inline-flex items-center gap-2">
-                                <FlaskConical className="w-4 h-4" />
-                                Generate Test Cases
-                            </Link>
-                            <Link href="/generate" className="btn-secondary w-full justify-center inline-flex items-center gap-2">
-                                <GitBranch className="w-4 h-4" />
-                                Generate Gherkin
-                            </Link>
-                            <Link href="/generate" className="btn-secondary w-full justify-center inline-flex items-center gap-2">
-                                <BrainCircuit className="w-4 h-4" />
-                                Analyze Coverage
-                            </Link>
-                            <Link href="/generate" className="btn-secondary w-full justify-center inline-flex items-center gap-2">
-                                <Rocket className="w-4 h-4" />
-                                Export Automation
-                            </Link>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {stats.map((stat) => (
-                        <StatCard key={stat.label} {...stat} />
-                    ))}
-                </div>
-
-                {/* Resume + Coverage + Suggestions */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    <Card className="xl:col-span-2 hover:border-indigo-500/30 transition-all duration-200">
-                        <CardHeader>
-                            <CardTitle>Resume Where You Left Off</CardTitle>
-                            <CardDescription>Continue from your latest generation in one click.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {latestGeneration ? (
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 rounded-xl bg-white/5 border border-gray-800 p-4">
-                                    <div className="min-w-0">
-                                        <p className="text-sm text-gray-400">Project</p>
-                                        <p className="text-base font-medium text-foreground truncate">{latestProjectName}</p>
-                                        <p className="text-sm text-gray-400 mt-2">Last action</p>
-                                        <p className="text-sm text-foreground capitalize">Generated {latestGeneration.generation_type.replace('_', ' ')}</p>
-                                        <p className="text-xs text-gray-500 mt-1">{formatDistanceToNow(new Date(latestGeneration.created_at), { addSuffix: true })}</p>
+                <section className="border-y border-border">
+                    <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border">
+                        {stats.map((stat) => (
+                            <div key={stat.label} className="px-4 py-4">
+                                <p className="text-[11px] text-foreground-muted uppercase tracking-[0.1em]">{stat.label}</p>
+                                <div className="mt-2 flex items-end justify-between gap-2">
+                                    <p className="mono-stat text-[30px] leading-none">{stat.value}</p>
+                                    <div className="flex items-center gap-1.5 text-[11px] text-foreground-muted font-mono">
+                                        <Dot className={`w-4 h-4 -m-1 ${stat.tone}`} />
+                                        <span>{stat.trend}</span>
                                     </div>
-                                    <Link href="/generate" className="btn-primary inline-flex items-center gap-2 w-fit">
-                                        <PlayCircle className="w-4 h-4" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="grid grid-cols-1 xl:grid-cols-12 gap-10">
+                    <div className="xl:col-span-8 space-y-8">
+                        <div className="space-y-3">
+                            <h3 className="section-label">Resume Where You Left Off</h3>
+                            {latestGeneration ? (
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-4">
+                                    <div className="min-w-0">
+                                        <p className="text-[15px] font-medium text-foreground truncate">{latestProjectName}</p>
+                                        <p className="text-[13px] text-foreground-muted mt-1 capitalize">Generated {latestGeneration.generation_type.replace('_', ' ')}</p>
+                                        <p className="text-[11px] text-foreground-subtle mt-1">{formatDistanceToNow(new Date(latestGeneration.created_at), { addSuffix: true })}</p>
+                                    </div>
+                                    <Link
+                                        href="/generate"
+                                        className="inline-flex items-center justify-center px-3 py-1.5 text-[12px] font-medium border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-200"
+                                    >
                                         Continue
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="rounded-xl bg-white/5 border border-gray-800 p-4 text-sm text-gray-400">
-                                    No activity yet. Start with your first generation.
-                                </div>
+                                <p className="text-[13px] text-foreground-subtle">No activity yet.</p>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="hover:border-indigo-500/30 transition-all duration-200">
-                        <CardHeader>
-                            <CardTitle>Coverage Summary</CardTitle>
-                            <CardDescription>Current quality signal from recent outputs.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <p className="text-sm text-gray-400">Project</p>
-                                <p className="text-sm font-medium text-foreground truncate">{latestProjectName}</p>
-                            </div>
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <p className="text-sm text-gray-400">Coverage</p>
-                                    <p className="text-sm font-semibold text-foreground">{coveragePercentage}%</p>
-                                </div>
-                                <div className="h-2 rounded-full bg-gray-800 overflow-hidden">
-                                    <div
-                                        className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-500"
-                                        style={{ width: `${coveragePercentage}%` }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="rounded-lg border border-gray-800 bg-white/5 p-3">
-                                <p className="text-xs text-gray-400">Missing scenarios</p>
-                                <p className="text-lg font-semibold text-foreground">{missingScenarios}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <Card className="hover:border-indigo-500/30 transition-all duration-200">
-                    <CardHeader>
-                        <CardTitle>AI Suggestions</CardTitle>
-                        <CardDescription>Recommended next steps to improve test quality.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {[
-                                'Add edge cases for login',
-                                'Improve payment coverage',
-                                'Generate API tests',
-                            ].map((suggestion) => (
-                                <button
-                                    key={suggestion}
-                                    type="button"
-                                    className="flex items-center gap-2 rounded-xl border border-gray-800 bg-white/5 px-4 py-3 text-left text-sm text-gray-300 hover:text-indigo-400 hover:border-indigo-500/30 transition-all duration-150"
-                                >
-                                    <Lightbulb className="w-4 h-4 text-gray-400" />
-                                    <span>{suggestion}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <div className="grid grid-cols-12 gap-6">
-                    {/* Recent Generations List */}
-                    <div className="col-span-12 flex flex-col">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-medium text-foreground">Recent Projects</h2>
-                            <Link href="/history" className="text-sm text-primary font-medium hover:text-indigo-400 transition-all duration-150">
-                                View all
-                            </Link>
                         </div>
 
-                        <div className="space-y-3 flex-1">
-                            {history.length === 0 ? (
-                                <div className="card-rich flex flex-col items-center justify-center py-14 text-center h-full">
-                                    <TrendingUp className="w-8 h-8 text-gray-400 mb-3" />
-                                    <p className="text-sm font-medium text-foreground mb-1">No data yet — start by generating your first test case</p>
-                                    <Link href="/generate" className="btn-primary mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm">
-                                        Generate Now
-                                    </Link>
-                                </div>
-                            ) : (
-                                history.map((gen) => {
-                                    const config = typeConfig[gen.generation_type];
-                                    const Icon = config.icon;
-                                    const health = getHealthBadge(gen.created_at);
-                                    return (
-                                        <div key={gen.id} className="card-rich py-4 flex items-center gap-4 group hover:bg-white/5 transition-all duration-150">
-                                            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                                                <Icon className="w-5 h-5 text-gray-400 group-hover:text-indigo-400 transition-colors duration-150" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-foreground truncate mb-1">
-                                                    {gen.requirement_text}
-                                                </p>
-                                                <p className="text-xs text-gray-400">
-                                                    Updated {formatDistanceToNow(new Date(gen.created_at), { addSuffix: true })}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className={`rounded-full px-2 py-1 text-xs font-medium ${health.cls}`}>
-                                                    {health.label}
-                                                </span>
-                                                <span className={`badge text-[10px] uppercase tracking-tight font-semibold ${config.cls}`}>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                                <h3 className="section-label">Recent Generations</h3>
+                                <Link href="/history" className="text-[12px] text-foreground-muted hover:text-foreground transition-colors duration-150">View all</Link>
+                            </div>
+
+                            <div className="border-t border-border">
+                                {historyWithProject.length === 0 ? (
+                                    <div className="py-8 text-[13px] text-foreground-subtle">No generations yet.</div>
+                                ) : (
+                                    historyWithProject.map((gen) => {
+                                        const config = typeConfig[gen.generation_type];
+                                        const Icon = config.icon;
+                                        return (
+                                            <Link
+                                                key={gen.id}
+                                                href="/history"
+                                                className="grid grid-cols-[20px_minmax(0,1fr)_auto_auto_20px] items-center gap-3 py-3 border-b border-border text-[13px] hover:bg-white/5 transition-colors duration-150"
+                                            >
+                                                <Icon className="w-4 h-4 text-foreground-muted" />
+                                                <p className="text-foreground truncate">{gen.projectName}</p>
+                                                <span className="inline-flex items-center gap-1 rounded-sm border border-border bg-background-card px-2 py-0.5 text-[11px] font-mono text-foreground-muted tracking-[0.06em]">
+                                                    <span className={config.dot}>●</span>
                                                     {config.label}
                                                 </span>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
+                                                <span className="text-[11px] text-foreground-muted">{formatDistanceToNow(new Date(gen.created_at), { addSuffix: true })}</span>
+                                                <ArrowRight className="w-3.5 h-3.5 text-foreground-subtle" />
+                                            </Link>
+                                        );
+                                    })
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="xl:col-span-4 space-y-8">
+                        <div className="space-y-3">
+                            <h3 className="section-label">Coverage</h3>
+                            <p className="mono-stat text-[44px] leading-none">{coveragePercentage}%</p>
+                            <div className="relative h-px bg-border overflow-hidden">
+                                <div className="absolute left-0 top-0 h-px bg-primary" style={{ width: `${coveragePercentage}%` }} />
+                            </div>
+                            <p className="text-[12px] text-foreground-muted">Missing scenarios: {missingScenarios}</p>
+                        </div>
+
+                        <div className="space-y-3">
+                            <h3 className="section-label">AI Suggestions</h3>
+                            <ul className="space-y-2 border-l-2 border-border-light pl-3">
+                                {[
+                                    'Add edge cases for login',
+                                    'Improve payment coverage',
+                                    'Generate API tests',
+                                ].map((suggestion) => (
+                                    <li key={suggestion} className="text-[13px] text-foreground-muted">→ {suggestion}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </section>
             </div>
         </DashboardLayout>
     );
