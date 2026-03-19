@@ -1,5 +1,5 @@
 import { Generation } from '@/types/generation.types';
-import { startOfDay, subDays, isAfter, format } from 'date-fns';
+import { format, isAfter, startOfDay, subDays } from 'date-fns';
 
 interface GenerationHeatmapProps {
     generations: Generation[];
@@ -21,10 +21,10 @@ export function GenerationHeatmap({ generations }: GenerationHeatmapProps) {
     }
 
     const getColor = (count: number) => {
-        if (count === 0) return 'bg-background-surface/50 border-white/5';
-        if (count < 3) return 'bg-violet-900/40 border-violet-800/40';
-        if (count < 6) return 'bg-violet-700/60 border-violet-600/60';
-        if (count < 10) return 'bg-violet-500/80 border-violet-400/80';
+        if (count === 0) return 'bg-background-card/70 border-border-light/70';
+        if (count < 3) return 'bg-violet-900/60 border-violet-700/60';
+        if (count < 6) return 'bg-violet-700/70 border-violet-500/70';
+        if (count < 10) return 'bg-violet-500/85 border-violet-300/85';
         return 'bg-violet-400 border-violet-300 shadow-[0_0_12px_rgba(167,139,250,0.4)]';
     };
 

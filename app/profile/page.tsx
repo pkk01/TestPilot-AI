@@ -108,6 +108,22 @@ const getSocialMeta = (url: string) => {
 
 const getReadableUrl = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
+const getSocialUsername = (url: string) => {
+    try {
+        const parsed = new URL(normalizeUrl(url));
+        const segments = parsed.pathname.split('/').filter(Boolean);
+        const lastSegment = segments[segments.length - 1];
+
+        if (lastSegment) {
+            return decodeURIComponent(lastSegment).replace(/^@/, '');
+        }
+    } catch {
+        return getReadableUrl(url);
+    }
+
+    return getReadableUrl(url);
+};
+
 export default function ProfilePage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [draft, setDraft] = useState<UserProfile | null>(null);
@@ -338,7 +354,7 @@ export default function ProfilePage() {
                                                     title={`${meta.name}: ${getReadableUrl(link)}`}
                                                 >
                                                     <Icon className="w-3.5 h-3.5 text-primary" />
-                                                    <span className="max-w-[190px] truncate">{getReadableUrl(link)}</span>
+                                                    <span className="max-w-[190px] truncate">{getSocialUsername(link)}</span>
                                                 </a>
                                             );
                                         })}

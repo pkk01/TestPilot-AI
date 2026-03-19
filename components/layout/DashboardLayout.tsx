@@ -154,10 +154,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <main className="flex-1 flex flex-col min-w-0 bg-background-surface overflow-hidden relative">
                 <header className="h-14 flex items-center px-6 bg-background/70 backdrop-blur-md border-b border-border z-10 relative">
-                    {pathname === '/dashboard' ? (
-                        <h1 className="font-display text-[22px] font-medium tracking-tight text-foreground">Dashboard</h1>
-                    ) : null}
-
                     <button
                         type="button"
                         className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-background-card/80 px-4 py-1.5 text-[12px] text-foreground-muted hover:text-foreground hover:border-border-light transition-colors duration-150"
