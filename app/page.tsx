@@ -9,6 +9,8 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import Navbar from "@/components/landing/Navbar";
 import ProblemSection from "@/components/landing/ProblemSection";
 import SocialProofSection from "@/components/landing/SocialProofSection";
+import { TextRevealSection } from "@/components/landing/TextRevealSection";
+import TypewriterSection from "@/components/landing/TypewriterSection";
 import dynamic from "next/dynamic";
 
 const ParticleBackground = dynamic(
@@ -34,6 +36,8 @@ export default function HomePage() {
                 <Navbar />
                 <HeroSection />
                 <ProblemSection />
+                <TextRevealSection />
+                <TypewriterSection />
                 <FeaturesSection />
                 <HowItWorksSection />
                 <ExampleOutputSection />

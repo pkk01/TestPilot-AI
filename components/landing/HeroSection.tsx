@@ -1,4 +1,5 @@
 "use client";
+import { FlipWords } from "@/components/ui/flip-words";
 import { motion } from "framer-motion";
 import { ArrowRight, Code2, Play, Shield, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
@@ -51,11 +52,15 @@ export default function HeroSection() {
                     </motion.div>
 
                     <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
-                        <span className="text-white">AI That Writes</span>
+                        <span className="text-white">AI That Generates</span>
                         <br />
                         <span className="text-white">Your </span>
-                        <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                            Test Cases.
+                        <FlipWords
+                            words={["Test Cases", "Bug Reports", "Edge Cases", "Test Plans"]}
+                            duration={2500}
+                            className="inline-block"
+                        />
+                        <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">.
                         </span>
                     </h1>
 
