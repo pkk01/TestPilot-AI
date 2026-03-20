@@ -112,20 +112,20 @@ export const MobileSidebar = ({
     const { open, setOpen } = useSidebar();
     return (
         <>
-            <div
-                className={cn(
-                    "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
-                )}
-                {...props}
-            >
-                <div className="flex justify-end z-20 w-full">
-                    <Menu
-                        className="text-neutral-800 dark:text-neutral-200 cursor-pointer"
-                        onClick={() => setOpen(!open)}
-                    />
-                </div>
-                <AnimatePresence>
-                    {open && (
+            {/* Mobile top bar — hidden; hamburger is in the DashboardLayout header */}
+            <AnimatePresence>
+                {open && (
+                    <>
+                        {/* Backdrop overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 bg-black/60 z-[99] md:hidden"
+                            onClick={() => setOpen(false)}
+                        />
+                        {/* Slide-in panel */}
                         <motion.div
                             initial={{ x: "-100%", opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -135,21 +135,21 @@ export const MobileSidebar = ({
                                 ease: "easeInOut",
                             }}
                             className={cn(
-                                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
+                                "fixed h-full w-[280px] max-w-[85vw] inset-y-0 left-0 bg-background p-6 pt-16 z-[100] flex flex-col justify-between md:hidden border-r border-border",
                                 className
                             )}
                         >
                             <div
-                                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200 cursor-pointer"
-                                onClick={() => setOpen(!open)}
+                                className="absolute right-4 top-4 z-50 text-foreground-muted hover:text-foreground cursor-pointer p-2 rounded-lg hover:bg-background-card transition-colors"
+                                onClick={() => setOpen(false)}
                             >
-                                <X />
+                                <X className="w-5 h-5" />
                             </div>
                             {children}
                         </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 };

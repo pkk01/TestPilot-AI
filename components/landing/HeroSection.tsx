@@ -90,7 +90,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
-                        className="flex gap-8 mt-12 pt-8 border-t border-white/5"
+                        className="flex flex-wrap gap-6 md:gap-8 mt-12 pt-8 border-t border-white/5"
                     >
                         {[
                             { value: "70%", label: "Faster QA" },

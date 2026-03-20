@@ -106,7 +106,7 @@ function TestCaseCard({ tc, index }: { tc: TestCase; index: number }) {
                     </span>
                     <h3 className="text-sm font-semibold text-foreground truncate">{tc.title}</h3>
                 </div>
-                <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap justify-end">
                     <button
                         onClick={handleExplain}
                         disabled={isExplaining}
@@ -409,12 +409,12 @@ export default function AIOutputViewer({
             {/* Export Automation Section */}
             {canExport && (
                 <div className="border-t border-border bg-background-surface px-4 py-3">
-                    <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                             <Package className="w-4 h-4 text-primary" />
                             <span className="text-xs font-bold text-foreground uppercase tracking-wider">Export Automation</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                             <button
                                 onClick={() => handleExport('selenium')}
                                 disabled={!!exporting}

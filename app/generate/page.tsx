@@ -184,10 +184,10 @@ function GenerateContent() {
 
     return (
         <DashboardLayout>
-            <div className="flex h-full">
-                {/* Left Panel */}
-                <div className="w-[400px] flex-shrink-0 border-r border-border bg-background-surface flex flex-col">
-                    <div className="px-6 py-5 border-b border-border">
+            <div className="flex flex-col md:flex-row h-full">
+                {/* Left Panel — full width on mobile, fixed width on desktop */}
+                <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col max-h-[45vh] md:max-h-none">
+                    <div className="px-4 py-4 md:px-6 md:py-5 border-b border-border">
                         <div className="flex items-center gap-2 mb-0.5">
                             <Sparkles className="w-5 h-5 text-gray-400" />
                             <h1 className="text-lg font-medium text-foreground">Generate Tests</h1>
@@ -197,7 +197,7 @@ function GenerateContent() {
                         </p>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
                         <ProjectSelector
                             selectedProjectId={selectedProjectId}
                             onSelect={setSelectedProjectId}
