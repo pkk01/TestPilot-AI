@@ -51,7 +51,7 @@ interface GenerationTabsProps {
 
 export default function GenerationTabs({ activeTab, onTabChange, hasOutput }: GenerationTabsProps) {
     return (
-        <div className="flex items-center border-b border-border gap-0">
+        <div className="flex items-center border-b border-border gap-0 overflow-x-auto scrollbar-hide">
             {tabs.map(({ id, label, icon: Icon }) => {
                 const isActive = activeTab === id;
                 const hasData = hasOutput[id];
@@ -59,10 +59,10 @@ export default function GenerationTabs({ activeTab, onTabChange, hasOutput }: Ge
                     <button
                         key={id}
                         onClick={() => onTabChange(id)}
-                        className={`tab-button flex items-center gap-2 relative ${isActive ? 'tab-button-active' : ''}`}
+                        className={`tab-button flex items-center gap-2 relative shrink-0 whitespace-nowrap ${isActive ? 'tab-button-active' : ''}`}
                     >
                         <Icon className="w-5 h-5 text-gray-400 hover:text-indigo-400 transition-colors duration-150" />
-                        <span>{label}</span>
+                        <span className="hidden sm:inline">{label}</span>
                         {hasData && (
                             <span className="w-1.5 h-1.5 rounded-full bg-primary absolute top-1.5 right-1" />
                         )}

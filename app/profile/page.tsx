@@ -265,21 +265,21 @@ export default function ProfilePage() {
 
     return (
         <DashboardLayout>
-            <div className="p-10 max-w-[1400px] mx-auto space-y-8 animate-fade-slide-in">
+            <div className="p-4 md:p-10 max-w-[1400px] mx-auto space-y-6 md:space-y-8 animate-fade-slide-in">
                 {/* Profile Header Card */}
                 <div className="card-rich p-8 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <UserCircle className="w-48 h-48 text-primary" />
                     </div>
                     
-                    <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
-                        <div className="w-32 h-32 rounded-3xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0 shadow-2xl shadow-primary/10">
-                            <UserCircle className="w-20 h-20 text-primary" />
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start relative z-10">
+                        <div className="w-20 h-20 md:w-32 md:h-32 rounded-3xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0 shadow-2xl shadow-primary/10">
+                            <UserCircle className="w-12 h-12 md:w-20 md:h-20 text-primary" />
                         </div>
                         
                         <div className="flex-1 space-y-4">
                             <div>
-                                <h1 className="text-4xl font-black text-foreground tracking-tight mb-1">
+                                <h1 className="text-2xl md:text-4xl font-black text-foreground tracking-tight mb-1">
                                     {profile?.name || 'Loading...'}
                                 </h1>
                                 <div className="flex flex-wrap items-center gap-2">
@@ -382,7 +382,7 @@ export default function ProfilePage() {
                 </div>
 
                 {isEditing && draft && (
-                    <div className="card-rich p-8 space-y-6 animate-fade-slide-in">
+                    <div className="card-rich p-4 md:p-8 space-y-6 animate-fade-slide-in">
                         <div className="flex items-center justify-between gap-4">
                             <div>
                                 <h2 className="text-xl font-black text-foreground tracking-tight">Edit Profile</h2>
@@ -547,14 +547,14 @@ export default function ProfilePage() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-12 gap-6">
+                <div className="grid grid-cols-12 gap-4 md:gap-6">
                     {/* Activity Heatmap */}
-                    <div className="col-span-12 lg:col-span-8 h-[400px]">
+                    <div className="col-span-12 lg:col-span-8 h-[300px] md:h-[400px] overflow-x-auto">
                         <GenerationHeatmap generations={allHistory} />
                     </div>
 
                     {/* Trend Graph */}
-                    <div className="col-span-12 lg:col-span-4 h-[400px]">
+                    <div className="col-span-12 lg:col-span-4 h-[300px] md:h-[400px]">
                         <GenerationTrend generations={allHistory} />
                     </div>
                 </div>

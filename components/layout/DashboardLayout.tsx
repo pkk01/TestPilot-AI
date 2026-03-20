@@ -12,6 +12,7 @@ import {
     History,
     LayoutDashboard,
     LogOut,
+    Menu,
     Settings,
     Sparkles,
     UserCircle,
@@ -140,6 +141,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                         <Link
                                             key={item.href}
                                             href={item.href}
+                                            onClick={() => setOpen(false)}
                                             className={cn(
                                                 "group relative flex items-center h-10 rounded-lg overflow-hidden transition-colors duration-150 ease-out px-3 gap-2",
                                                 pathname === item.href ? "text-foreground bg-background-card" : "text-foreground-muted hover:text-foreground"
@@ -181,6 +183,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                                 <Link
                                                     key={`${group.label}-${item.label}`}
                                                     href={item.href}
+                                                    onClick={() => setOpen(false)}
                                                     className="group relative flex items-center h-10 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-card/60 transition-colors duration-150 ml-6 px-3 gap-2"
                                                 >
                                                     <item.icon className="h-4 w-4 shrink-0" />
@@ -227,7 +230,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </Sidebar>
 
             <main className="flex-1 flex flex-col min-w-0 bg-background-surface overflow-hidden relative">
-                <header className="h-14 flex items-center px-6 bg-background/70 backdrop-blur-md border-b border-border z-10 relative">
+                <header className="h-14 flex items-center px-4 md:px-6 bg-background/70 backdrop-blur-md border-b border-border z-10 relative">
+                    {/* Mobile hamburger */}
+                    <button
+                        type="button"
+                        onClick={() => setOpen(true)}
+                        className="md:hidden p-2 -ml-1 mr-2 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-card transition-colors"
+                        aria-label="Open navigation"
+                    >
+                        <Menu className="w-5 h-5" />
+                    </button>
+
                     <button
                         type="button"
                         className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-background-card/80 px-4 py-1.5 text-[12px] text-foreground-muted hover:text-foreground hover:border-border-light transition-colors duration-150"

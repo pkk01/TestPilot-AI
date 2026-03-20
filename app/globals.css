@@ -35,6 +35,8 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -94,12 +96,12 @@
   }
 
   .card {
-    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-6 backdrop-blur shadow-sm
+    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 md:p-6 backdrop-blur shadow-sm
            hover:border-indigo-500/30 hover:shadow-lg transition-all duration-200;
   }
 
   .card-rich {
-    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-6 backdrop-blur shadow-sm 
+    @apply bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 md:p-6 backdrop-blur shadow-sm 
         hover:border-indigo-500/30 hover:shadow-lg transition-all duration-200;
   }
 
@@ -300,5 +302,13 @@
     border: 1px solid var(--border);
     border-radius: 8px;
   }
-}
 
+  /* Scrollbar hide utility — keeps content scrollable but hides the scroll indicator */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

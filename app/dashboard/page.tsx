@@ -87,9 +87,9 @@ export default function DashboardPage() {
 
     return (
         <DashboardLayout>
-            <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
-                <section className="space-y-5">
-                    <h2 className="font-display text-[32px] md:text-[40px] leading-tight font-black text-foreground tracking-tight">What are you testing today?</h2>
+            <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 md:py-8 space-y-8 md:space-y-10">
+                <section className="space-y-4 md:space-y-5">
+                    <h2 className="font-display text-[26px] md:text-[32px] lg:text-[40px] leading-tight font-black text-foreground tracking-tight">What are you testing today?</h2>
 
                     <div className="rounded-2xl border border-border bg-background-card px-3 py-2 flex items-end gap-2">
                         <textarea
@@ -140,7 +140,7 @@ export default function DashboardPage() {
                             <div key={stat.label} className="px-4 py-4">
                                 <p className="text-[10px] text-foreground-muted uppercase tracking-[0.2em] font-bold">{stat.label}</p>
                                 <div className="mt-2 flex items-end justify-between gap-2">
-                                    <p className="text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
+                                <p className="text-[40px] md:text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
                                     <div className="flex items-center gap-1.5 text-[11px] text-foreground-muted font-mono font-bold">
                                         <Dot className={`w-4 h-4 -m-1 ${stat.tone}`} />
                                         <span>{stat.trend}</span>
@@ -151,8 +151,8 @@ export default function DashboardPage() {
                     </div>
                 </section>
 
-                <section className="grid grid-cols-1 xl:grid-cols-12 gap-10">
-                    <div className="xl:col-span-8 space-y-8">
+                <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+                    <div className="lg:col-span-8 space-y-6 md:space-y-8">
                         <div className="space-y-3">
                             <h3 className="text-[10px] uppercase tracking-[0.2em] text-foreground-muted font-bold">Resume Where You Left Off</h3>
                             {latestGeneration ? (
@@ -191,16 +191,16 @@ export default function DashboardPage() {
                                             <Link
                                                 key={gen.id}
                                                 href="/history"
-                                                className="grid grid-cols-[20px_minmax(0,1fr)_auto_auto_20px] items-center gap-3 py-3 border-b border-border text-[13px] hover:bg-white/5 transition-colors duration-150"
+                                                className="flex items-center gap-3 py-3 border-b border-border text-[13px] hover:bg-white/5 transition-colors duration-150 overflow-hidden"
                                             >
-                                                <Icon className="w-4 h-4 text-foreground-muted" />
-                                                <p className="text-foreground truncate font-semibold">{gen.projectName}</p>
-                                                <span className="inline-flex items-center gap-1 rounded-sm border border-border bg-background-card px-2 py-0.5 text-[11px] font-mono text-foreground-muted tracking-[0.06em]">
+                                                <Icon className="w-4 h-4 text-foreground-muted shrink-0" />
+                                                <p className="text-foreground truncate font-semibold flex-1 min-w-0">{gen.projectName}</p>
+                                                <span className="hidden sm:inline-flex items-center gap-1 rounded-sm border border-border bg-background-card px-2 py-0.5 text-[11px] font-mono text-foreground-muted tracking-[0.06em] shrink-0">
                                                     <span className={config.dot}>●</span>
                                                     {config.label}
                                                 </span>
-                                                <span className="text-[11px] text-foreground-muted font-medium">{formatDistanceToNow(new Date(gen.created_at), { addSuffix: true })}</span>
-                                                <ArrowRight className="w-3.5 h-3.5 text-foreground-subtle" />
+                                                <span className="text-[11px] text-foreground-muted font-medium shrink-0 hidden md:inline">{formatDistanceToNow(new Date(gen.created_at), { addSuffix: true })}</span>
+                                                <ArrowRight className="w-3.5 h-3.5 text-foreground-subtle shrink-0" />
                                             </Link>
                                         );
                                     })
@@ -209,7 +209,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
 
-                    <div className="xl:col-span-4 space-y-8">
+                    <div className="lg:col-span-4 space-y-6 md:space-y-8">
                         <div className="space-y-3">
                             <h3 className="text-[10px] uppercase tracking-[0.2em] text-foreground-muted font-bold">Coverage</h3>
                             <p className="text-[56px] leading-none font-black tracking-tight text-foreground">{coveragePercentage}%</p>

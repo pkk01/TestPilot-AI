@@ -101,10 +101,10 @@ function HistoryCard({ generation }: { generation: Generation }) {
 
     return (
         <div className="card-rich hover:border-primary/20 transition-all group">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
                 {/* Icon */}
-                <div className="w-10 h-10 rounded-xl bg-background-surface border border-border flex items-center justify-center flex-shrink-0 group-hover:border-primary/30 transition-colors">
-                    <Icon className={`w-5 h-5 ${config.color}`} />
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-background-surface border border-border flex items-center justify-center flex-shrink-0 group-hover:border-primary/30 transition-colors">
+                    <Icon className={`w-4 h-4 md:w-5 md:h-5 ${config.color}`} />
                 </div>
 
                 {/* Content */}
@@ -124,8 +124,8 @@ function HistoryCard({ generation }: { generation: Generation }) {
                 </div>
 
                 {/* Badge + Actions */}
-                <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className={`badge text-[9px] uppercase tracking-tighter font-black ${config.cls}`}>{config.label}</span>
+                <div className="flex items-center gap-2 md:gap-3 flex-shrink-0 flex-wrap justify-end">
+                    <span className={`badge text-[9px] uppercase tracking-tighter font-black ${config.cls} hidden sm:inline-flex`}>{config.label}</span>
                     <button
                         onClick={handleCopy}
                         className="p-2 rounded-lg bg-background-surface hover:bg-background-card-hover text-foreground-subtle hover:text-foreground transition-all"
@@ -201,7 +201,7 @@ export default function HistoryPage() {
 
     return (
         <DashboardLayout>
-            <div className="p-10 max-w-[1400px] mx-auto animate-fade-slide-in">
+            <div className="p-4 md:p-10 max-w-[1400px] mx-auto animate-fade-slide-in">
                 {/* Header */}
                 <div className="mb-10">
                     <h1 className="text-3xl font-bold text-foreground mb-2">Generation History</h1>
@@ -211,7 +211,7 @@ export default function HistoryPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-8">
                     {/* Search */}
                     <div className="relative flex-1 w-full max-w-md">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground-subtle" />
@@ -225,7 +225,7 @@ export default function HistoryPage() {
                     </div>
 
                     {/* Type filter */}
-                    <div className="flex items-center gap-1 bg-background-card border border-border rounded-xl p-1.5 shadow-xl shadow-black/10">
+                    <div className="flex items-center gap-1 bg-background-card border border-border rounded-xl p-1.5 shadow-xl shadow-black/10 overflow-x-auto scrollbar-hide w-full md:w-auto">
                         {(['all', 'test_cases', 'gherkin', 'step_defs'] as const).map((type) => {
                             const label = type === 'all' ? 'All' : typeConfig[type].label;
                             const count = counts[type];
@@ -233,7 +233,7 @@ export default function HistoryPage() {
                                 <button
                                     key={type}
                                     onClick={() => setFilterType(type)}
-                                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 ${filterType === type
+                                    className={`px-3 md:px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 shrink-0 whitespace-nowrap ${filterType === type
                                         ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.05]'
                                         : 'text-foreground-subtle hover:text-foreground hover:bg-background-card-hover'
                                         }`}
