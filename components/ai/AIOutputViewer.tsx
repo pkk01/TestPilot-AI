@@ -1,10 +1,10 @@
 'use client';
 
 import { TestCase, CoverageResult } from '@/types/generation.types';
-import { Check, Copy, Download, FileText, Package } from 'lucide-react';
+import { Check, Copy, Download, FileText, Package, Sparkles, RefreshCw, ChevronUp } from 'lucide-react';
 import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { TabId } from './GenerationTabs';
 import CoverageAnalysis from './CoverageAnalysis';
 
@@ -40,9 +40,62 @@ const EDITOR_OPTIONS = {
     },
 };
 
+function SkeletonShimmer() {
+    return (
+        <div className="space-y-2">
+            <div className="skeleton-line w-full" />
+            <div className="skeleton-line w-[85%]" />
+            <div className="skeleton-line w-[60%]" />
+        </div>
+    );
+}
+
 function TestCaseCard({ tc, index }: { tc: TestCase; index: number }) {
+    const [explanation, setExplanation] = useState<string | null>(null);
+    const [isExplaining, setIsExplaining] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+
     const priorityClass =
         tc.priority === 'High' ? 'badge-high' : tc.priority === 'Low' ? 'badge-low' : 'badge-medium';
+
+    const handleExplain = async () => {
+        // If already have explanation, just toggle expand
+        if (explanation) {
+            setIsExpanded(prev => !prev);
+            return;
+        }
+
+        // Fetch explanation
+        setIsExplaining(true);
+        setIsExpanded(true);
+        setError(null);
+
+        try {
+            const res = await fetch('/api/explain-test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    testCase: tc.title,
+                    steps: tc.steps,
+                    expected: tc.expected_result,
+                }),
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Failed to explain test case');
+            }
+
+            const data = await res.json();
+            setExplanation(data.explanation);
+        } catch (err: any) {
+            setError(err.message || 'Something went wrong');
+        } finally {
+            setIsExplaining(false);
+        }
+    };
 
     return (
         <div className="card mb-3 animate-slide-up">
@@ -53,7 +106,38 @@ function TestCaseCard({ tc, index }: { tc: TestCase; index: number }) {
                     </span>
                     <h3 className="text-sm font-semibold text-foreground truncate">{tc.title}</h3>
                 </div>
-                <span className={`badge flex-shrink-0 ${priorityClass}`}>{tc.priority}</span>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button
+                        onClick={handleExplain}
+                        disabled={isExplaining}
+                        className="btn-ghost text-[11px] flex items-center gap-1 py-1 px-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isExplaining ? (
+                            <>
+                                <Sparkles className="w-3 h-3 animate-pulse" />
+                                <span>Explaining…</span>
+                            </>
+                        ) : isExpanded && explanation ? (
+                            <>
+                                <ChevronUp className="w-3 h-3" />
+                                <span>Collapse</span>
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles className="w-3 h-3" />
+                                <span>Explain</span>
+                            </>
+                        )}
+                    </button>
+                    <button
+                        className="btn-ghost text-[11px] flex items-center gap-1 py-1 px-2 rounded-md opacity-60 cursor-default"
+                        title="Coming soon"
+                    >
+                        <RefreshCw className="w-3 h-3" />
+                        <span>Improve</span>
+                    </button>
+                    <span className={`badge ${priorityClass}`}>{tc.priority}</span>
+                </div>
             </div>
 
             {tc.preconditions && (
@@ -84,6 +168,35 @@ function TestCaseCard({ tc, index }: { tc: TestCase; index: number }) {
                     Expected Result
                 </p>
                 <p className="text-xs text-foreground-muted">{tc.expected_result}</p>
+            </div>
+
+            {/* Expandable Explanation Panel */}
+            <div
+                ref={panelRef}
+                className="explanation-panel-wrapper"
+                style={{
+                    maxHeight: isExpanded ? '300px' : '0px',
+                    opacity: isExpanded ? 1 : 0,
+                }}
+            >
+                <div className="explanation-panel">
+                    <div className="flex items-center gap-1.5 mb-2">
+                        <span className="text-sm leading-none">💡</span>
+                        <span className="text-[11px] font-semibold text-foreground uppercase tracking-wider">
+                            Why this test matters
+                        </span>
+                    </div>
+
+                    {isExplaining ? (
+                        <SkeletonShimmer />
+                    ) : error ? (
+                        <p className="text-xs text-red-400">{error}</p>
+                    ) : explanation ? (
+                        <p className="text-xs text-foreground-muted leading-[1.6]">
+                            {explanation}
+                        </p>
+                    ) : null}
+                </div>
             </div>
         </div>
     );
