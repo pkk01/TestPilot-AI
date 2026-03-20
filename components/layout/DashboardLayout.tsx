@@ -218,7 +218,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             >
                                 <span className="w-1 h-1 rounded-full bg-primary" />
                                 <p className="text-[10px] text-primary/90 tracking-[0.06em] font-mono">
-                                    built by Pratham
+                                    Buid by Pratham Kumar
                                 </p>
                             </a>
                         </div>
