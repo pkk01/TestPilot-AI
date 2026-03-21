@@ -3,7 +3,9 @@
 import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import { createClient } from '@/lib/supabase/client-ssr';
 import { cn } from "@/lib/utils";
-import {Bell, ChevronDown,
+import {
+    Bell,
+    ChevronDown,
     Command,
     FlaskConical,
     Folder,
