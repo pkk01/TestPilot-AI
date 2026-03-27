@@ -11,42 +11,50 @@ const config: Config = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#6366F1",
-                    hover: "#4F46E5",
-                    foreground: "#ffffff",
+                    DEFAULT: "#c0c1ff",
+                    container: "#8083ff",
+                    hover: "#a6a8ff",
+                    foreground: "#1000a9",
                 },
                 secondary: {
-                    DEFAULT: "#64748B",
-                    foreground: "#ffffff",
+                    DEFAULT: "#c0c1ff",
+                    container: "#42447b",
+                    foreground: "#292a60",
                 },
                 background: {
-                    DEFAULT: "#0F172A",
-                    card: "#1E293B",
-                    surface: "#111827",
+                    DEFAULT: "#0b1326",
+                    card: "#171f33",
+                    surface: "#131b2e",
+                    bright: "#31394d",
+                    highest: "#2d3449"
                 },
                 foreground: {
-                    DEFAULT: "#F8FAFC",
-                    muted: "#CBD5E1",
-                    subtle: "#B4C3D6",
+                    DEFAULT: "#dae2fd",
+                    muted: "#908fa0",
+                    subtle: "#c7c4d7",
                 },
                 border: {
-                    DEFAULT: "#334155",
-                    light: "#475569",
+                    DEFAULT: "rgba(144, 143, 160, 0)",
+                    light: "rgba(144, 143, 160, 0.15)",
                 },
                 destructive: {
-                    DEFAULT: "#EF4444",
-                    foreground: "#ffffff",
+                    DEFAULT: "#ffb4ab",
+                    foreground: "#690005",
                 },
                 success: {
                     DEFAULT: "#22C55E",
                 },
                 warning: {
-                    DEFAULT: "#F59E0B",
+                    DEFAULT: "#d97721",
                 },
+                accent: {
+                    DEFAULT: "#c0c1ff",
+                    muted: "#42447b",
+                }
             },
             fontFamily: {
-                display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
-                sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+                display: ["var(--font-headline)", "system-ui", "sans-serif"],
+                sans: ["var(--font-body)", "system-ui", "sans-serif"],
                 mono: ["var(--font-mono)", "ui-monospace", "monospace"],
             },
             backgroundImage: {

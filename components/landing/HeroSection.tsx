@@ -154,13 +154,12 @@ export default function HeroSection() {
                                     ease: "easeInOut",
                                 },
                             }}
-                            className={`absolute bg-[#0d1117]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl ${
-                                i === 0
+                            className={`absolute bg-[#0d1117]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl ${i === 0
                                     ? "top-4 -left-4 w-64"
                                     : i === 1
-                                    ? "top-1/2 -right-8 w-60"
-                                    : "bottom-4 left-8 w-56"
-                            }`}
+                                        ? "top-1/2 -right-8 w-60"
+                                        : "bottom-4 left-8 w-56"
+                                }`}
                         >
                             <div className="flex items-center gap-2 mb-2">
                                 <div className={`w-2 h-2 rounded-full ${i === 2 ? "bg-yellow-400" : "bg-green-400"}`} />

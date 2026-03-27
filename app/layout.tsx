@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Figtree, IBM_Plex_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Space_Grotesk, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -10,15 +10,15 @@ export const viewport: Viewport = {
     userScalable: false,
 };
 
-const figtreeSans = Figtree({
+const spaceGrotesk = Space_Grotesk({
     subsets: ['latin'],
-    variable: '--font-sans',
+    variable: '--font-headline',
     display: 'swap',
 });
 
-const figtreeDisplay = Figtree({
+const plusJakartaSans = Plus_Jakarta_Sans({
     subsets: ['latin'],
-    variable: '--font-display',
+    variable: '--font-body',
     display: 'swap',
 });
 
@@ -48,7 +48,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className="dark">
-            <body className={`${figtreeSans.variable} ${figtreeDisplay.variable} ${ibmPlexMono.variable}`}>
+            <body className={`${plusJakartaSans.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable}`}>
                 <Providers>
                     {children}
                 </Providers>
