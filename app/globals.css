@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --background: #0b1220;
-    --background-surface: #0f172a;
-    --background-card: #111827;
-    --background-card-hover: #172033;
-    --foreground: #f9fafb;
-    --foreground-muted: #9ca3af;
-    --foreground-subtle: #6b7280;
+    --background: #0d1117;
+    --background-surface: #0d1117;
+    --background-card: #161b22;
+    --background-card-hover: #21262d;
+    --foreground: #c9d1d9;
+    --foreground-muted: #8b949e;
+    --foreground-subtle: #484f58;
     --primary: #6366f1;
     --primary-rgb: 99, 102, 241;
-    --primary-hover: #4f46e5;
+    --primary-hover: #818cf8;
     --primary-glow: rgba(99, 102, 241, 0.2);
-    --accent: #22d3ee;
-    --border: #1f2937;
-    --border-light: #334155;
-    --border-subtle: #1e293b;
-    --accent-muted: #1e1b4b;
-    --warning: #f59e0b;
-    --destructive: #ef4444;
+    --accent: #6366f1;
+    --border: rgba(99, 102, 241, 0.1);
+    --border-light: rgba(99, 102, 241, 0.15);
+    --border-subtle: rgba(99, 102, 241, 0.05);
+    --accent-muted: #3730a3;
+    --warning: #d97721;
+    --destructive: #ffb4ab;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -40,7 +40,7 @@
   }
 
   body {
-    font-family: var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-body), system-ui, sans-serif;
     background-color: var(--background);
     color: var(--foreground);
     min-height: 100vh;
@@ -56,11 +56,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #1e293b;
+    background: var(--background-surface);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: #2d3449;
     border-radius: 3px;
   }
 
@@ -71,7 +71,7 @@
 
 @layer components {
   .font-display {
-    font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-headline), var(--font-body), system-ui, sans-serif;
   }
 
   .btn-primary {
@@ -106,14 +106,18 @@
   }
 
   .glass {
-    @apply bg-background-card/60 backdrop-blur-md border border-white/5;
+    @apply bg-[#31394d]/60 backdrop-blur-[24px] shadow-[0_40px_40px_rgba(192,193,255,0.04)];
+  }
+
+  .invisible-orchestrator-gradient {
+    background: linear-gradient(135deg, #7a82ff 0%, #99a0ff 100%);
   }
 
   .input-field {
-    @apply bg-[#0B1220] border border-gray-700 rounded-xl 
+    @apply bg-background-highest rounded-xl border-none
            px-4 py-2.5 text-foreground placeholder:text-foreground-subtle
-        focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20
-           transition-all duration-200 w-full text-sm;
+        focus:outline-none focus:bg-background-card
+           transition-all duration-200 w-full text-sm shadow-none;
   }
 
   .sidebar-link {

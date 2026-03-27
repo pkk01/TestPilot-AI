@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { CommandPalette } from './CommandPalette';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const router = useRouter();
     const [userName, setUserName] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
+    const [isMac, setIsMac] = useState(true);
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
         Generation: true,
         Account: true,
@@ -49,6 +51,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const supabase = createClient();
 
     useEffect(() => {
+        setIsMac(typeof window !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+        
         const getUser = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
@@ -106,7 +110,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
         <div className="flex h-screen bg-background overflow-hidden font-sans text-foreground">
             <Sidebar open={open} setOpen={setOpen}>
-                <SidebarBody className="justify-between gap-8 bg-background border-r border-border">
+                <SidebarBody className="justify-between gap-8 bg-background-surface border-none shadow-[4px_0_24px_rgba(0,0,0,0.2)] z-20">
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
                         <Link
                             href="/dashboard"
@@ -144,7 +148,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                             onClick={() => setOpen(false)}
                                             className={cn(
                                                 "group relative flex items-center h-10 rounded-lg overflow-hidden transition-colors duration-150 ease-out px-3 gap-2",
-                                                pathname === item.href ? "text-foreground bg-background-card" : "text-foreground-muted hover:text-foreground"
+                                                pathname === item.href ? "text-primary bg-background-card" : "text-foreground-muted hover:text-foreground"
                                             )}
                                         >
                                             <span
@@ -184,7 +188,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                                     key={`${group.label}-${item.label}`}
                                                     href={item.href}
                                                     onClick={() => setOpen(false)}
-                                                    className="group relative flex items-center h-10 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-card/60 transition-colors duration-150 ml-6 px-3 gap-2"
+                                                    className="group relative flex items-center h-10 rounded-lg text-foreground-muted hover:text-primary hover:bg-background-card/50 transition-colors duration-150 ml-6 px-3 gap-2"
                                                 >
                                                     <item.icon className="h-4 w-4 shrink-0" />
                                                     <span className="text-[13px] font-medium leading-none">{item.label}</span>
@@ -200,7 +204,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                         href={item.href}
                                         className={cn(
                                             "group relative flex items-center justify-center h-10 rounded-lg transition-colors duration-150",
-                                            pathname === item.href ? "text-foreground bg-background-card" : "text-foreground-muted hover:text-foreground"
+                                            pathname === item.href ? "text-primary bg-background-card" : "text-foreground-muted hover:text-foreground hover:bg-background-card/50"
                                         )}
                                     >
                                         <item.icon className="h-4 w-4 shrink-0" />
@@ -229,8 +233,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </SidebarBody>
             </Sidebar>
 
-            <main className="flex-1 flex flex-col min-w-0 bg-background-surface overflow-hidden relative">
-                <header className="h-14 flex items-center px-4 md:px-6 bg-background/70 backdrop-blur-md border-b border-border z-10 relative">
+            <main className="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative">
+                <header className="h-14 flex items-center px-4 md:px-6 bg-background/50 backdrop-blur-xl border-none z-10 relative">
                     {/* Mobile hamburger */}
                     <button
                         type="button"
@@ -243,11 +247,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                     <button
                         type="button"
-                        className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-background-card/80 px-4 py-1.5 text-[12px] text-foreground-muted hover:text-foreground hover:border-border-light transition-colors duration-150"
+                        onClick={() => window.dispatchEvent(new CustomEvent('toggle-command-palette'))}
+                        className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full border border-primary/20 bg-background-bright/40 pl-4 pr-1.5 py-1.5 text-[13px] font-display text-foreground-muted hover:text-primary hover:border-primary/40 hover:bg-background-bright/60 transition-all duration-300 shadow-[0_0_30px_rgba(192,193,255,0.05)] backdrop-blur-2xl"
                     >
-                        <Command className="w-3.5 h-3.5" />
+                        <Command className="w-3.5 h-3.5 mr-1" />
                         <span>Search or jump to...</span>
-                        <span className="font-mono text-[10px] text-foreground-subtle">⌘K</span>
+                        <kbd className="ml-2 inline-flex h-6 items-center gap-1 rounded border border-white/5 bg-white/5 px-2 font-mono text-[10px] font-medium text-foreground-muted opacity-100 uppercase">
+                            <span className="text-xs">{isMac ? '⌘' : 'Ctrl'}</span>K
+                        </kbd>
                     </button>
 
                     <div className="ml-auto flex items-center gap-3">
@@ -288,6 +295,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     {children}
                 </div>
             </main>
+            
+            <CommandPalette />
         </div>
     );
 }

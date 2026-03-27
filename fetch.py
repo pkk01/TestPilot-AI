@@ -1,0 +1,3 @@
+import urllib.request
+url = "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzQ2ODUzOTBkZmE1ZTQxNDc5MzFkN2MzYWFhNjFkMGUwEgsSBxCZmaP56RYYAZIBIwoKcHJvamVjdF9pZBIVQhMyNTM2NDIxNzczNTExMjg0NjU1&filename=&opi=96797242"
+urllib.request.urlretrieve(url, "command_center.html")

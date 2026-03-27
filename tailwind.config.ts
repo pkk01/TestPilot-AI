@@ -11,42 +11,50 @@ const config: Config = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#6366F1",
-                    hover: "#4F46E5",
+                    DEFAULT: "#6366f1",
+                    container: "#4f46e5",
+                    hover: "#818cf8",
                     foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#64748B",
+                    DEFAULT: "#a8b1ff",
+                    container: "#3730a3",
                     foreground: "#ffffff",
                 },
                 background: {
-                    DEFAULT: "#0F172A",
-                    card: "#1E293B",
-                    surface: "#111827",
+                    DEFAULT: "#0d1117",
+                    card: "#161b22",
+                    surface: "#0d1117",
+                    bright: "#21262d",
+                    highest: "#30363d"
                 },
                 foreground: {
-                    DEFAULT: "#F8FAFC",
-                    muted: "#CBD5E1",
-                    subtle: "#B4C3D6",
+                    DEFAULT: "#dee5ff",
+                    muted: "#a3aac4",
+                    subtle: "#6d758c",
                 },
                 border: {
-                    DEFAULT: "#334155",
-                    light: "#475569",
+                    DEFAULT: "rgba(161, 250, 255, 0.1)",
+                    light: "rgba(161, 250, 255, 0.15)",
                 },
                 destructive: {
-                    DEFAULT: "#EF4444",
-                    foreground: "#ffffff",
+                    DEFAULT: "#ffb4ab",
+                    foreground: "#690005",
                 },
                 success: {
                     DEFAULT: "#22C55E",
                 },
                 warning: {
-                    DEFAULT: "#F59E0B",
+                    DEFAULT: "#d97721",
                 },
+                accent: {
+                    DEFAULT: "#c0c1ff",
+                    muted: "#42447b",
+                }
             },
             fontFamily: {
-                display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
-                sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+                display: ["var(--font-headline)", "system-ui", "sans-serif"],
+                sans: ["var(--font-body)", "system-ui", "sans-serif"],
                 mono: ["var(--font-mono)", "ui-monospace", "monospace"],
             },
             backgroundImage: {

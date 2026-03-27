@@ -91,7 +91,7 @@ export default function DashboardPage() {
                 <section className="space-y-4 md:space-y-5">
                     <h2 className="font-display text-[26px] md:text-[32px] lg:text-[40px] leading-tight font-black text-foreground tracking-tight">What are you testing today?</h2>
 
-                    <div className="rounded-2xl border border-border bg-background-card px-3 py-2 flex items-end gap-2">
+                    <div className="rounded-2xl border-none bg-background-highest px-4 py-3 flex items-end gap-3 transition-all duration-300 focus-within:bg-background-bright">
                         <textarea
                             ref={heroInputRef}
                             value={heroInput}
@@ -134,13 +134,13 @@ export default function DashboardPage() {
                     </div>
                 </section>
 
-                <section className="border-y border-border">
-                    <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border">
+                <section>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 bg-background-surface rounded-[2rem] p-6 md:p-8 shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
                         {stats.map((stat) => (
-                            <div key={stat.label} className="px-4 py-4">
+                            <div key={stat.label} className="p-4 bg-background-highest rounded-2xl hover:bg-background-bright transition-colors duration-300">
                                 <p className="text-[10px] text-foreground-muted uppercase tracking-[0.2em] font-bold">{stat.label}</p>
                                 <div className="mt-2 flex items-end justify-between gap-2">
-                                <p className="text-[40px] md:text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
+                                <p className="font-display text-[40px] md:text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
                                     <div className="flex items-center gap-1.5 text-[11px] text-foreground-muted font-mono font-bold">
                                         <Dot className={`w-4 h-4 -m-1 ${stat.tone}`} />
                                         <span>{stat.trend}</span>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
                         <div className="space-y-3">
                             <h3 className="text-[10px] uppercase tracking-[0.2em] text-foreground-muted font-bold">Resume Where You Left Off</h3>
                             {latestGeneration ? (
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-4">
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-background-highest rounded-2xl p-5 hover:bg-background-bright transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
                                     <div className="min-w-0">
                                         <p className="font-display text-[15px] font-bold text-foreground truncate tracking-tight">{latestProjectName}</p>
                                         <p className="text-[15px] text-foreground-muted mt-1 capitalize font-medium">Generated {latestGeneration.generation_type.replace('_', ' ')}</p>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
                                     </div>
                                     <Link
                                         href="/generate"
-                                        className="inline-flex items-center justify-center px-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.08em] border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-200"
+                                        className="inline-flex items-center justify-center px-4 py-2 text-[12px] font-bold uppercase tracking-[0.08em] bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors duration-200"
                                     >
                                         Continue
                                     </Link>
@@ -180,9 +180,9 @@ export default function DashboardPage() {
                                 <Link href="/history" className="text-[12px] text-foreground-muted hover:text-foreground transition-colors duration-150 font-medium">View all</Link>
                             </div>
 
-                            <div className="border-t border-border">
+                            <div className="mt-4 space-y-2">
                                 {historyWithProject.length === 0 ? (
-                                    <div className="py-8 text-[13px] text-foreground-subtle">No generations yet.</div>
+                                    <div className="py-8 text-[13px] text-foreground-subtle bg-background-card/30 rounded-2xl text-center">No generations yet.</div>
                                 ) : (
                                     historyWithProject.map((gen) => {
                                         const config = typeConfig[gen.generation_type];
@@ -191,11 +191,11 @@ export default function DashboardPage() {
                                             <Link
                                                 key={gen.id}
                                                 href="/history"
-                                                className="flex items-center gap-3 py-3 border-b border-border text-[13px] hover:bg-white/5 transition-colors duration-150 overflow-hidden"
+                                                className="flex items-center gap-3 py-3 px-4 rounded-xl text-[13px] bg-background-highest hover:bg-background-bright transition-all duration-200 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.1)]"
                                             >
-                                                <Icon className="w-4 h-4 text-foreground-muted shrink-0" />
+                                                <Icon className="w-4 h-4 text-primary shrink-0" />
                                                 <p className="text-foreground truncate font-semibold flex-1 min-w-0">{gen.projectName}</p>
-                                                <span className="hidden sm:inline-flex items-center gap-1 rounded-sm border border-border bg-background-card px-2 py-0.5 text-[11px] font-mono text-foreground-muted tracking-[0.06em] shrink-0">
+                                                <span className="hidden sm:inline-flex items-center gap-1 rounded-sm bg-background-surface px-2 py-0.5 text-[11px] font-mono text-foreground-muted tracking-[0.06em] shrink-0">
                                                     <span className={config.dot}>●</span>
                                                     {config.label}
                                                 </span>
@@ -212,22 +212,24 @@ export default function DashboardPage() {
                     <div className="lg:col-span-4 space-y-6 md:space-y-8">
                         <div className="space-y-3">
                             <h3 className="text-[10px] uppercase tracking-[0.2em] text-foreground-muted font-bold">Coverage</h3>
-                            <p className="text-[56px] leading-none font-black tracking-tight text-foreground">{coveragePercentage}%</p>
-                            <div className="relative h-px bg-border overflow-hidden">
+                            <p className="font-display text-[56px] leading-none font-black tracking-tight text-foreground">{coveragePercentage}%</p>
+                            <div className="relative h-px bg-background-highest overflow-hidden">
                                 <div className="absolute left-0 top-0 h-px bg-primary" style={{ width: `${coveragePercentage}%` }} />
                             </div>
                             <p className="text-[12px] text-foreground-muted font-medium">Missing scenarios: {missingScenarios}</p>
                         </div>
 
-                        <div className="space-y-3">
-                            <h3 className="text-[10px] uppercase tracking-[0.2em] text-foreground-muted font-bold">AI Suggestions</h3>
-                            <ul className="space-y-2 border-l-2 border-border-light pl-3">
+                        <div className="space-y-4">
+                            <h3 className="text-[11px] uppercase tracking-[0.15em] text-foreground-muted font-bold pl-2">AI Suggestions</h3>
+                            <ul className="space-y-3 relative z-10">
                                 {[
                                     'Add edge cases for login',
                                     'Improve payment coverage',
                                     'Generate API tests',
                                 ].map((suggestion) => (
-                                    <li key={suggestion} className="text-[13px] text-foreground-muted font-medium">→ {suggestion}</li>
+                                    <li key={suggestion} className="flex items-center text-[14px] text-foreground font-medium bg-background-highest py-3.5 px-6 rounded-full border border-border/50 hover:bg-background-bright transition-all cursor-pointer shadow-sm">
+                                        <span className="text-primary font-light mr-3">→</span> {suggestion}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
