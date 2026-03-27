@@ -219,17 +219,16 @@ export default function DashboardPage() {
                             <p className="text-[12px] text-foreground-muted font-medium">Missing scenarios: {missingScenarios}</p>
                         </div>
 
-                        <div className="space-y-4 invisible-orchestrator-gradient text-white rounded-[2rem] p-6 lg:p-8 relative overflow-hidden group shadow-[0_20px_40px_rgba(192,193,255,0.1)]">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-700" />
-                            <h3 className="text-[10px] uppercase tracking-[0.2em] text-white/80 font-bold">AI Suggestions</h3>
+                        <div className="space-y-4">
+                            <h3 className="text-[11px] uppercase tracking-[0.15em] text-foreground-muted font-bold pl-2">AI Suggestions</h3>
                             <ul className="space-y-3 relative z-10">
                                 {[
                                     'Add edge cases for login',
                                     'Improve payment coverage',
                                     'Generate API tests',
                                 ].map((suggestion) => (
-                                    <li key={suggestion} className="flex items-center gap-3 text-[13px] text-white font-semibold bg-white/10 py-2 px-3 rounded-xl border border-white/5 backdrop-blur-md hover:bg-white/20 transition-colors">
-                                        → {suggestion}
+                                    <li key={suggestion} className="flex items-center text-[14px] text-foreground font-medium bg-background-highest py-3.5 px-6 rounded-full border border-border/50 hover:bg-background-bright transition-all cursor-pointer shadow-sm">
+                                        <span className="text-primary font-light mr-3">→</span> {suggestion}
                                     </li>
                                 ))}
                             </ul>

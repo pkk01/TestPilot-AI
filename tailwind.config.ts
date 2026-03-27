@@ -11,31 +11,31 @@ const config: Config = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: "#c0c1ff",
-                    container: "#8083ff",
-                    hover: "#a6a8ff",
-                    foreground: "#1000a9",
+                    DEFAULT: "#6366f1",
+                    container: "#4f46e5",
+                    hover: "#818cf8",
+                    foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#c0c1ff",
-                    container: "#42447b",
-                    foreground: "#292a60",
+                    DEFAULT: "#a8b1ff",
+                    container: "#3730a3",
+                    foreground: "#ffffff",
                 },
                 background: {
-                    DEFAULT: "#0b1326",
-                    card: "#171f33",
-                    surface: "#131b2e",
-                    bright: "#31394d",
-                    highest: "#2d3449"
+                    DEFAULT: "#0d1117",
+                    card: "#161b22",
+                    surface: "#0d1117",
+                    bright: "#21262d",
+                    highest: "#30363d"
                 },
                 foreground: {
-                    DEFAULT: "#dae2fd",
-                    muted: "#908fa0",
-                    subtle: "#c7c4d7",
+                    DEFAULT: "#dee5ff",
+                    muted: "#a3aac4",
+                    subtle: "#6d758c",
                 },
                 border: {
-                    DEFAULT: "rgba(144, 143, 160, 0)",
-                    light: "rgba(144, 143, 160, 0.15)",
+                    DEFAULT: "rgba(161, 250, 255, 0.1)",
+                    light: "rgba(161, 250, 255, 0.15)",
                 },
                 destructive: {
                     DEFAULT: "#ffb4ab",
