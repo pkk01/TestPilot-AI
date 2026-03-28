@@ -1,41 +1,57 @@
 "use client";
 
-import { useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { TestimonialCard } from "@/components/ui/testimonial-cards";
+import { TypewriterTestimonial } from "@/components/ui/typewriter-testimonial";
 
 const testimonials = [
     {
-        id: 12,
-        testimonial:
-            "TestPilot AI cut our test case creation time by 80%. We used to spend days writing test cases — now it takes minutes. Absolute game-changer for our QA team.",
-        author: "Sarah Chen — QA Lead @ Stripe",
+        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_1.mp3",
+        text: "TestPilot AI cut our test case creation time by 80%. We used to spend days writing test cases — now it takes minutes. Absolute game-changer for our QA team.",
+        name: "Sarah Chen",
+        jobtitle: "QA Lead @ Stripe",
     },
     {
-        id: 25,
-        testimonial:
-            "The edge case detection is incredible. TestPilot AI found boundary conditions our senior engineers missed. It's like having an extra QA architect on the team.",
-        author: "James Park — Engineering Manager @ Shopify",
+        image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_2.mp3",
+        text: "The edge case detection is incredible. TestPilot AI found boundary conditions our senior engineers missed. It's like having an extra QA architect on the team.",
+        name: "James Park",
+        jobtitle: "Engineering Manager @ Shopify",
     },
     {
-        id: 33,
-        testimonial:
-            "We export Selenium scripts directly from TestPilot AI. Our automation coverage went from 40% to 90% in just 3 weeks. Best QA investment we ever made.",
-        author: "Priya Sharma — VP of Engineering @ Razorpay",
+        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_3.mp3",
+        text: "We export Selenium scripts directly from TestPilot AI. Our automation coverage went from 40% to 90% in just 3 weeks. Best QA investment we ever made.",
+        name: "Priya Sharma",
+        jobtitle: "VP of Engineering @ Razorpay",
+    },
+    {
+        image: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_4.mp3",
+        text: "The Cucumber feature file generation is spot-on. Given/When/Then steps are clean and our BDD workflow is now fully automated. Saved us weeks of manual work.",
+        name: "Emily White",
+        jobtitle: "SDET Lead @ Microsoft",
+    },
+    {
+        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_5.mp3",
+        text: "TestPilot AI transformed how we approach QA. The AI understands our requirements better than most junior testers. Coverage went up, bugs went down. Simple as that.",
+        name: "David Lee",
+        jobtitle: "CTO @ FinTech Startup",
+    },
+    {
+        image: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=200&auto=format&fit=crop",
+        audio: "audio_6.mp3",
+        text: "I was skeptical about AI-generated test cases, but TestPilot AI delivers production-quality outputs every time. The Playwright export feature alone is worth it.",
+        name: "Alex Johnson",
+        jobtitle: "QA Automation Engineer @ Netflix",
     },
 ];
 
 export default function TestimonialsSection() {
-    const [positions, setPositions] = useState(["front", "middle", "back"]);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-    const handleShuffle = () => {
-        const newPositions = [...positions];
-        newPositions.unshift(newPositions.pop()!);
-        setPositions(newPositions);
-    };
 
     return (
         <section
@@ -62,32 +78,17 @@ export default function TestimonialsSection() {
                         </span>
                     </h2>
                     <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg">
-                        Trusted by engineering teams at top companies to streamline their QA workflows.
+                        Hover over each avatar to hear what our users think.
                     </p>
                 </motion.div>
 
-                {/* Cards */}
+                {/* Typewriter Testimonial */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.7, delay: 0.3 }}
-                    className="grid place-content-center px-4 sm:px-8 py-8 md:py-24"
                 >
-                    <div className="overflow-hidden w-full max-w-[500px] mx-auto">
-                        <div className="relative h-[400px] sm:h-[400px] md:h-[420px] w-[320px] mx-auto scale-[0.75] sm:scale-[0.85] md:scale-100 origin-top">
-                            {testimonials.map((testimonial, index) => (
-                                <TestimonialCard
-                                    key={testimonial.id}
-                                    {...testimonial}
-                                    handleShuffle={handleShuffle}
-                                    position={positions[index]}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                    <p className="text-center text-gray-500 text-sm mt-4 md:mt-4">
-                        ← Swipe to see more testimonials
-                    </p>
+                    <TypewriterTestimonial testimonials={testimonials} />
                 </motion.div>
             </div>
         </section>

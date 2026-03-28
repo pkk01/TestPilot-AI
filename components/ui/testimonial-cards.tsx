@@ -12,11 +12,11 @@ interface TestimonialCardProps {
 }
 
 const avatarGradients = [
-  "from-indigo-500 to-cyan-500",
+  "from-emerald-400 to-cyan-500",
   "from-purple-500 to-pink-500",
-  "from-emerald-500 to-cyan-500",
-  "from-amber-500 to-orange-500",
+  "from-amber-400 to-orange-500",
   "from-blue-500 to-indigo-500",
+  "from-rose-400 to-pink-500",
 ];
 
 function getInitials(author: string) {
@@ -37,13 +37,12 @@ export function TestimonialCard({ handleShuffle, testimonial, position, id, auth
   return (
     <motion.div
       style={{
-        zIndex: position === "front" ? "3" : position === "middle" ? "2" : "1"
+        zIndex: position === "front" ? "3" : position === "middle" ? "2" : "1",
       }}
       animate={{
-        rotate: position === "front" ? "-2deg" : position === "middle" ? "2deg" : "6deg",
-        scale: position === "front" ? 1 : position === "middle" ? 0.95 : 0.9,
-        x: position === "front" ? "0%" : position === "middle" ? "15%" : "30%",
-        opacity: position === "front" ? 1 : position === "middle" ? 0.7 : 0.4,
+        rotate: position === "front" ? "-6deg" : position === "middle" ? "0deg" : "6deg",
+        x: position === "front" ? "0%" : position === "middle" ? "33%" : "66%",
+        opacity: position === "front" ? 1 : position === "middle" ? 0.85 : 0.6,
       }}
       drag={true}
       dragElastic={0.35}
@@ -64,18 +63,35 @@ export function TestimonialCard({ handleShuffle, testimonial, position, id, auth
         dragRef.current = 0;
       }}
       transition={{ duration: 0.35, type: "spring", stiffness: 200, damping: 25 }}
-      className={`absolute left-0 top-0 grid h-[400px] w-[320px] select-none place-content-center space-y-5 rounded-2xl border border-slate-700/60 bg-slate-900/80 p-6 shadow-2xl backdrop-blur-md ${
+      className={`absolute left-0 top-0 grid h-[420px] w-[340px] select-none place-content-center space-y-5 rounded-2xl border border-white/[0.08] p-8 shadow-2xl ${
         isFront ? "cursor-grab active:cursor-grabbing" : ""
       }`}
+      // Glassmorphism via inline style for proper backdrop-filter
+      layoutId={`card-${id}`}
     >
-      {/* Avatar with initials */}
-      <div
-        className={`mx-auto h-20 w-20 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg border-2 border-white/10`}
-      >
-        <span className="text-2xl font-bold text-white">{getInitials(author)}</span>
+      {/* Glass background */}
+      <div className="absolute inset-0 rounded-2xl bg-slate-900/40 backdrop-blur-xl" />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.05] to-transparent" />
+
+      {/* Content on top of glass */}
+      <div className="relative z-10 flex flex-col items-center gap-5">
+        {/* Avatar */}
+        <div
+          className={`h-16 w-16 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg shadow-black/30 border border-white/10`}
+        >
+          <span className="text-xl font-bold text-white">{getInitials(author)}</span>
+        </div>
+
+        {/* Testimonial text */}
+        <p className="text-center text-[15px] italic text-slate-300/90 leading-relaxed">
+          &quot;{testimonial}&quot;
+        </p>
+
+        {/* Author */}
+        <span className="text-center text-sm font-medium text-indigo-400">
+          {author}
+        </span>
       </div>
-      <span className="text-center text-base italic text-slate-400 leading-relaxed">&quot;{testimonial}&quot;</span>
-      <span className="text-center text-sm font-medium text-indigo-400">{author}</span>
     </motion.div>
   );
 }

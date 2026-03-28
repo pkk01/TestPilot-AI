@@ -157,8 +157,8 @@ export default function NewFooter() {
             </div>
 
             {/* Text hover effect - desktop only */}
-            <div className="lg:flex hidden h-[30rem] -mt-52 -mb-36">
-                <TextHoverEffect text="TestPilot" className="z-50" />
+            <div className="lg:flex hidden h-[12rem] -mt-8">
+                <TextHoverEffect text="TestPilot AI" className="z-50" />
             </div>
 
             <FooterBackgroundGradient />
