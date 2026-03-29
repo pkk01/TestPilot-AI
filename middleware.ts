@@ -1,6 +1,15 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Security headers applied to every response
+const SECURITY_HEADERS: Record<string, string> = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+}
+
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
@@ -59,7 +68,7 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // Define protected routes
-    const protectedRoutes = ['/dashboard', '/generate', '/projects', '/history']
+    const protectedRoutes = ['/dashboard', '/generate', '/projects', '/history', '/profile']
     const isProtectedRoute = protectedRoutes.some((route) =>
         request.nextUrl.pathname.startsWith(route)
     )
@@ -72,6 +81,11 @@ export async function middleware(request: NextRequest) {
     // Redirect to dashboard if accessing auth routes while logged in
     if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup') && user) {
         return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
+    // Apply security headers to every response
+    for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+        response.headers.set(key, value)
     }
 
     return response
