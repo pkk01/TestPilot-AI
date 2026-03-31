@@ -5,17 +5,25 @@ import GenerationTabs, { TabId } from '@/components/ai/GenerationTabs';
 import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import AIUsageBadge from '@/components/ui/AIUsageBadge';
 import { LoaderFive } from '@/components/ui/loader';
 import { CoverageResult, TestCase } from '@/types/generation.types';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ShieldAlert } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface GenerationState {
     test_cases: TestCase[] | null;
     gherkin: string | null;
     step_defs: string | null;
     coverage: CoverageResult | null;
+}
+
+interface UsageData {
+    used: number;
+    limit: number;
+    remaining: number;
 }
 
 function GenerateContent() {
@@ -28,12 +36,30 @@ function GenerateContent() {
     const [isCoverageLoading, setIsCoverageLoading] = useState(false);
     const [coverageError, setCoverageError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+    const [usage, setUsage] = useState<UsageData | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
         test_cases: null,
         gherkin: null,
         step_defs: null,
         coverage: null,
     });
+
+    // Fetch initial usage on mount
+    useEffect(() => {
+        const fetchUsage = async () => {
+            try {
+                const res = await fetch('/api/usage');
+                const data = await res.json();
+                if (data.success && data.data) {
+                    setUsage(data.data);
+                }
+            } catch {
+                // Silent — badge won't show
+            }
+        };
+        fetchUsage();
+    }, []);
 
     useEffect(() => {
         const pId = searchParams.get('projectId');
@@ -52,12 +78,9 @@ function GenerateContent() {
                 const data = await res.json();
 
                 if (data.success && data.data.length > 0) {
-                    // Find the latest of each type
                     const latestTC = data.data.find((g: any) => g.generation_type === 'test_cases');
                     const latestGherkin = data.data.find((g: any) => g.generation_type === 'gherkin');
                     const latestStepDefs = data.data.find((g: any) => g.generation_type === 'step_defs');
-
-                    // Load coverage from the latest test_cases generation if available
                     const coverageData = latestTC?.coverage_result || null;
 
                     setOutputs({
@@ -67,7 +90,6 @@ function GenerateContent() {
                         coverage: coverageData,
                     });
                 } else {
-                    // Reset if no history found
                     setOutputs({
                         test_cases: null,
                         gherkin: null,
@@ -87,23 +109,35 @@ function GenerateContent() {
         setIsLoading(true);
         setError(null);
         setCoverageError(null);
-        // Clear previous coverage while new generation is in progress
+        setRateLimitError(null);
         setOutputs(prev => ({ ...prev, coverage: null }));
 
+        // Generate a unique batchId for this entire generate action
+        // All AI calls in this batch share this ID → counts as 1 daily use
+        const batchId = uuidv4();
+
         try {
-            // Generate all three in parallel for best UX
+            // Generate testcases + gherkin in parallel
             const [testCasesRes, gherkinRes] = await Promise.all([
                 fetch('/api/generate/testcases', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ requirement, projectId: selectedProjectId }),
+                    body: JSON.stringify({ requirement, projectId: selectedProjectId, batchId }),
                 }),
                 fetch('/api/generate/gherkin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ requirement, projectId: selectedProjectId }),
+                    body: JSON.stringify({ requirement, projectId: selectedProjectId, batchId }),
                 }),
             ]);
+
+            // Check for rate limit errors
+            if (testCasesRes.status === 429 || gherkinRes.status === 429) {
+                const errorData = await (testCasesRes.status === 429 ? testCasesRes : gherkinRes).json();
+                setRateLimitError(errorData.error || 'Daily AI limit reached. Please try again tomorrow.');
+                setIsLoading(false);
+                return;
+            }
 
             const [tcData, gherkinData] = await Promise.all([
                 testCasesRes.json(),
@@ -119,14 +153,20 @@ function GenerateContent() {
                     const stepDefsRes = await fetch('/api/generate/stepdefs', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ gherkin: newGherkin, projectId: selectedProjectId }),
+                        body: JSON.stringify({ gherkin: newGherkin, projectId: selectedProjectId, batchId }),
                     });
-                    const stepDefsData = await stepDefsRes.json();
-                    if (stepDefsData.success) {
-                        stepDefsContent = stepDefsData.data.javaCode;
+
+                    if (stepDefsRes.status === 429) {
+                        // Rate limited on stepdefs — continue with what we have
+                        console.warn('Step definitions rate limited');
+                    } else {
+                        const stepDefsData = await stepDefsRes.json();
+                        if (stepDefsData.success) {
+                            stepDefsContent = stepDefsData.data.javaCode;
+                        }
                     }
                 } catch {
-                    // Step defs optional, won't block the rest
+                    // Step defs optional
                 }
             }
 
@@ -140,10 +180,21 @@ function GenerateContent() {
             });
 
             if (!tcData.success && !gherkinData.success) {
-                setError('Generation failed. Please check your API keys and try again.');
+                setError(tcData.error || gherkinData.error || 'Generation failed. Please check your API keys and try again.');
             }
 
-            // After generation succeeds, trigger coverage analysis in the background
+            // Refresh usage count after generation
+            try {
+                const usageRes = await fetch('/api/usage');
+                const usageData = await usageRes.json();
+                if (usageData.success && usageData.data) {
+                    setUsage(usageData.data);
+                }
+            } catch {
+                // Non-critical
+            }
+
+            // Trigger coverage analysis in the background
             if (generatedTestCases && generatedTestCases.length > 0) {
                 setIsCoverageLoading(true);
                 try {
@@ -154,13 +205,19 @@ function GenerateContent() {
                             requirement,
                             testCases: generatedTestCases,
                             projectId: selectedProjectId,
+                            batchId,
                         }),
                     });
-                    const coverageData = await coverageRes.json();
-                    if (coverageData.success) {
-                        setOutputs(prev => ({ ...prev, coverage: coverageData.data }));
+
+                    if (coverageRes.status === 429) {
+                        setCoverageError('Coverage analysis unavailable due to rate limits.');
                     } else {
-                        setCoverageError(coverageData.error || 'Coverage analysis failed.');
+                        const coverageData = await coverageRes.json();
+                        if (coverageData.success) {
+                            setOutputs(prev => ({ ...prev, coverage: coverageData.data }));
+                        } else {
+                            setCoverageError(coverageData.error || 'Coverage analysis failed.');
+                        }
                     }
                 } catch {
                     setCoverageError('Coverage analysis unavailable. Please try again later.');
@@ -182,15 +239,20 @@ function GenerateContent() {
         coverage: !!outputs.coverage,
     };
 
+    const isBlocked = usage && usage.remaining === 0;
+
     return (
         <DashboardLayout>
             <div className="flex flex-col md:flex-row h-full">
-                {/* Left Panel — full width on mobile, fixed width on desktop */}
+                {/* Left Panel */}
                 <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col max-h-[45vh] md:max-h-none">
                     <div className="px-4 py-4 md:px-6 md:py-5 border-b border-border">
-                        <div className="flex items-center gap-2 mb-0.5">
-                            <Sparkles className="w-5 h-5 text-gray-400" />
-                            <h1 className="text-lg font-medium text-foreground">Generate Tests</h1>
+                        <div className="flex items-center justify-between mb-0.5">
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-gray-400" />
+                                <h1 className="text-lg font-medium text-foreground">Generate Tests</h1>
+                            </div>
+                            {usage && <AIUsageBadge usageOverride={usage} compact />}
                         </div>
                         <p className="text-sm text-gray-400 pl-7">
                             AI-powered test artifact generation
@@ -202,6 +264,26 @@ function GenerateContent() {
                             selectedProjectId={selectedProjectId}
                             onSelect={setSelectedProjectId}
                         />
+
+                        {/* Rate limit block banner */}
+                        {isBlocked && (
+                            <div className="card-rich p-4 bg-red-900/20 border-red-800/40 flex items-start gap-3">
+                                <ShieldAlert className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-medium text-red-400">Daily AI Limit Reached</p>
+                                    <p className="text-xs text-red-400/70 mt-1">
+                                        You have used all {usage.limit} AI calls for today. Your quota resets tomorrow.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Rate limit error from API response */}
+                        {rateLimitError && !isBlocked && (
+                            <div className="card-rich p-4 bg-amber-900/15 border-amber-800/40">
+                                <p className="text-sm text-amber-400">{rateLimitError}</p>
+                            </div>
+                        )}
 
                         <RequirementInput
                             onGenerate={handleGenerate}
@@ -221,7 +303,6 @@ function GenerateContent() {
 
                 {/* Right Panel */}
                 <div className="flex-1 flex flex-col min-w-0 bg-background">
-                    {/* Tabs */}
                     <div className="border-b border-border bg-background-surface px-4">
                         <GenerationTabs
                             activeTab={activeTab}
@@ -230,7 +311,6 @@ function GenerateContent() {
                         />
                     </div>
 
-                    {/* Output Viewer */}
                     <div className="flex-1 overflow-hidden flex flex-col">
                         <AIOutputViewer
                             activeTab={activeTab}

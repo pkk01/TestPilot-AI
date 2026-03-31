@@ -1,21 +1,14 @@
-import { createClient } from '@/lib/supabase/server';
+import { withApiGuard } from '@/lib/security/apiGuard';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET /api/history - Fetch all generation history
 export async function GET(request: NextRequest) {
-    try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-        }
-
+    return withApiGuard(request, async ({ user, supabase }) => {
         const { searchParams } = new URL(request.url);
         const projectId = searchParams.get('projectId');
         const limit = parseInt(searchParams.get('limit') || '50');
 
-        // First handle authorization: get all project IDs the user owns
+        // Get all project IDs the user owns
         const { data: userProjects, error: projectsError } = await supabase
             .from('projects')
             .select('id')
@@ -32,22 +25,23 @@ export async function GET(request: NextRequest) {
         let query = supabase
             .from('generations')
             .select(`
-        *,
-        projects!inner (
-          id,
-          name,
-          user_id
-        )
-      `)
-            // Important security step: Only show generations for projects this user owns
+                *,
+                projects!inner (
+                    id,
+                    name,
+                    user_id
+                )
+            `)
             .in('project_id', userProjectIds)
             .order('created_at', { ascending: false })
             .limit(limit);
 
         if (projectId) {
-            // Additional check to make sure they aren't fetching a project they don't own
             if (!userProjectIds.includes(projectId)) {
-                return NextResponse.json({ success: false, error: 'Unauthorized access to project' }, { status: 403 });
+                return NextResponse.json(
+                    { success: false, error: 'Unauthorized access to project' },
+                    { status: 403 }
+                );
             }
             query = query.eq('project_id', projectId);
         }
@@ -57,30 +51,20 @@ export async function GET(request: NextRequest) {
         if (error) throw error;
 
         return NextResponse.json({ success: true, data });
-    } catch (error) {
-        console.error('Get history error:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to fetch generation history' },
-            { status: 500 }
-        );
-    }
+    });
 }
 
 // DELETE /api/history - Delete a specific generation
 export async function DELETE(request: NextRequest) {
-    try {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-        }
-
+    return withApiGuard(request, async ({ user, supabase }) => {
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
         if (!id) {
-            return NextResponse.json({ success: false, error: 'Generation ID is required' }, { status: 400 });
+            return NextResponse.json(
+                { success: false, error: 'Generation ID is required' },
+                { status: 400 }
+            );
         }
 
         // Verify ownership: generation -> project -> user
@@ -97,12 +81,18 @@ export async function DELETE(request: NextRequest) {
             .single();
 
         if (genError || !generation) {
-            return NextResponse.json({ success: false, error: 'Generation not found' }, { status: 404 });
+            return NextResponse.json(
+                { success: false, error: 'Generation not found' },
+                { status: 404 }
+            );
         }
 
         // @ts-ignore - projects is joined
         if (generation.projects.user_id !== user.id) {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+            return NextResponse.json(
+                { success: false, error: 'Unauthorized' },
+                { status: 403 }
+            );
         }
 
         const { error: deleteError } = await supabase
@@ -113,11 +103,5 @@ export async function DELETE(request: NextRequest) {
         if (deleteError) throw deleteError;
 
         return NextResponse.json({ success: true, message: 'Generation deleted successfully' });
-    } catch (error) {
-        console.error('Delete generation error:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to delete generation' },
-            { status: 500 }
-        );
-    }
+    });
 }
