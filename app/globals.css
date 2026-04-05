@@ -8,6 +8,8 @@
     --background-surface: #0d1117;
     --background-card: #161b22;
     --background-card-hover: #21262d;
+    --background-bright: #21262d;
+    --background-highest: #30363d;
     --foreground: #c9d1d9;
     --foreground-muted: #8b949e;
     --foreground-subtle: #484f58;
@@ -44,9 +46,25 @@
     background-color: var(--background);
     color: var(--foreground);
     min-height: 100vh;
+    min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+  }
+
+  /* Ensure buttons/links have adequate touch targets on mobile */
+  @media (pointer: coarse) {
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Exception: inline links, badges, small UI elements */
+    .badge, span > a, p > a,
+    nav a, nav button {
+      min-height: 40px;
+      min-width: auto;
+    }
   }
 
   /* Custom scrollbar */

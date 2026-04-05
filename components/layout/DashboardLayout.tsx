@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CommandPalette } from './CommandPalette';
 
 interface DashboardLayoutProps {
@@ -48,6 +48,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         Generation: true,
         Account: true,
     });
+    const [profileOpen, setProfileOpen] = useState(false);
+    const profileRef = useRef<HTMLDivElement>(null);
     const supabase = createClient();
 
     useEffect(() => {
@@ -62,6 +64,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         getUser();
     }, [supabase]);
+
+    // Close profile dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setProfileOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, []);
 
     const topNavItems: NavItem[] = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -265,9 +282,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <Bell className="w-4 h-4" />
                         </button>
 
-                        <div className="relative group/profile">
+                        <div className="relative" ref={profileRef}>
                             <button
                                 type="button"
+                                onClick={() => setProfileOpen(!profileOpen)}
                                 className="flex items-center gap-2 rounded-lg px-3 py-1.5 border border-border/50 bg-background-card/50 hover:bg-background-card hover:border-border transition-all duration-150"
                                 aria-label="Profile menu"
                             >
@@ -277,16 +295,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 <span className="text-[13px] font-medium text-foreground hidden sm:inline">{userName || 'User'}</span>
                             </button>
 
-                            <div className="absolute right-0 top-full mt-0 w-36 rounded-md border border-border bg-background-card p-1 opacity-0 pointer-events-none translate-y-1 group-hover/profile:opacity-100 group-hover/profile:pointer-events-auto group-hover/profile:translate-y-0 group-focus-within/profile:opacity-100 group-focus-within/profile:pointer-events-auto group-focus-within/profile:translate-y-0 transition-all duration-150 z-20">
-                                <button
-                                    type="button"
-                                    onClick={handleSignOut}
-                                    className="w-full inline-flex items-center gap-2 rounded-sm px-2 py-1.5 text-[12px] text-foreground-muted hover:text-foreground hover:bg-white/5 transition-colors duration-150"
-                                >
-                                    <LogOut className="w-3.5 h-3.5" />
-                                    Logout
-                                </button>
-                            </div>
+                            {profileOpen && (
+                                <div className="absolute right-0 top-full mt-1 w-36 rounded-md border border-border bg-background-card p-1 z-20 shadow-lg">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setProfileOpen(false);
+                                            handleSignOut();
+                                        }}
+                                        className="w-full inline-flex items-center gap-2 rounded-sm px-2 py-2 text-[12px] text-foreground-muted hover:text-foreground hover:bg-white/5 transition-colors duration-150"
+                                    >
+                                        <LogOut className="w-3.5 h-3.5" />
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </header>

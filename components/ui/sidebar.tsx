@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface Links {
     label: string;
@@ -84,6 +84,21 @@ export const DesktopSidebar = ({
     ...props
 }: React.ComponentProps<typeof motion.div>) => {
     const { open, setOpen, animate } = useSidebar();
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+    useEffect(() => {
+        // Detect touch device to prevent hover-based open/close on mobile
+        const checkTouch = () => {
+            setIsTouchDevice(
+                window.matchMedia('(pointer: coarse)').matches ||
+                'ontouchstart' in window
+            );
+        };
+        checkTouch();
+        window.addEventListener('resize', checkTouch);
+        return () => window.removeEventListener('resize', checkTouch);
+    }, []);
+
     return (
         <>
             <motion.div
@@ -94,8 +109,8 @@ export const DesktopSidebar = ({
                 animate={{
                     width: animate ? (open ? "260px" : "64px") : "260px",
                 }}
-                onMouseEnter={() => setOpen(true)}
-                onMouseLeave={() => setOpen(false)}
+                onMouseEnter={() => !isTouchDevice && setOpen(true)}
+                onMouseLeave={() => !isTouchDevice && setOpen(false)}
                 {...props}
             >
                 {children}
@@ -125,7 +140,8 @@ export const MobileSidebar = ({
                             className="fixed inset-0 bg-black/60 z-[99] md:hidden"
                             onClick={() => setOpen(false)}
                         />
-                        {/* Slide-in panel */}
+                        {/* Slide-in panel — className intentionally NOT merged here
+                            to prevent z-index from being overridden by parent (e.g. z-20) */}
                         <motion.div
                             initial={{ x: "-100%", opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -134,10 +150,7 @@ export const MobileSidebar = ({
                                 duration: 0.3,
                                 ease: "easeInOut",
                             }}
-                            className={cn(
-                                "fixed h-full w-[280px] max-w-[85vw] inset-y-0 left-0 bg-background p-6 pt-16 z-[100] flex flex-col justify-between md:hidden border-r border-border",
-                                className
-                            )}
+                            className="fixed h-full w-[280px] max-w-[85vw] inset-y-0 left-0 bg-background p-4 pt-14 z-[100] flex flex-col md:hidden border-r border-border overflow-y-auto overscroll-contain"
                         >
                             <div
                                 className="absolute right-4 top-4 z-50 text-foreground-muted hover:text-foreground cursor-pointer p-2 rounded-lg hover:bg-background-card transition-colors"
@@ -145,7 +158,9 @@ export const MobileSidebar = ({
                             >
                                 <X className="w-5 h-5" />
                             </div>
-                            {children}
+                            <div className={cn("flex flex-col flex-1 justify-between", className)}>
+                                {children}
+                            </div>
                         </motion.div>
                     </>
                 )}

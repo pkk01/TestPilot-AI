@@ -245,7 +245,7 @@ function GenerateContent() {
         <DashboardLayout>
             <div className="flex flex-col md:flex-row h-full">
                 {/* Left Panel */}
-                <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col max-h-[45vh] md:max-h-none">
+                <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col min-h-0">
                     <div className="px-4 py-4 md:px-6 md:py-5 border-b border-border">
                         <div className="flex items-center justify-between mb-0.5">
                             <div className="flex items-center gap-2">

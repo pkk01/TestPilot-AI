@@ -547,14 +547,14 @@ export default function ProfilePage() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-12 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
                     {/* Activity Heatmap */}
-                    <div className="col-span-12 lg:col-span-8 h-[300px] md:h-[400px] overflow-x-auto">
+                    <div className="lg:col-span-8 h-[250px] md:h-[400px] overflow-x-auto overflow-y-hidden">
                         <GenerationHeatmap generations={allHistory} />
                     </div>
 
                     {/* Trend Graph */}
-                    <div className="col-span-12 lg:col-span-4 h-[300px] md:h-[400px]">
+                    <div className="lg:col-span-4 h-[250px] md:h-[400px]">
                         <GenerationTrend generations={allHistory} />
                     </div>
                 </div>

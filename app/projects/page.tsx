@@ -56,18 +56,18 @@ export default function ProjectsPage() {
 
     return (
         <DashboardLayout>
-            <div className="p-10 max-w-[1400px] mx-auto animate-fade-slide-in">
+            <div className="p-4 md:p-10 max-w-[1400px] mx-auto animate-fade-slide-in">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-12">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 md:mb-12">
                     <div>
-                        <h1 className="text-3xl font-bold text-foreground mb-2">Projects</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Projects</h1>
                         <p className="text-sm text-foreground-subtle">
                             Organize your test generations by project workspace.
                         </p>
                     </div>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="btn-primary flex items-center gap-2 py-3 px-6 rounded-xl font-bold uppercase tracking-widest text-xs"
+                        className="btn-primary flex items-center gap-2 py-3 px-6 rounded-xl font-bold uppercase tracking-widest text-xs shrink-0"
                     >
                         <Plus className="w-4 h-4" />
                         New Project

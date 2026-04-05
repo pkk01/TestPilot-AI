@@ -135,14 +135,14 @@ export default function DashboardPage() {
                 </section>
 
                 <section>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 bg-background-surface rounded-[2rem] p-6 md:p-8 shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 bg-background-surface rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-8 shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
                         {stats.map((stat) => (
-                            <div key={stat.label} className="p-4 bg-background-highest rounded-2xl hover:bg-background-bright transition-colors duration-300">
-                                <p className="text-[10px] text-foreground-muted uppercase tracking-[0.2em] font-bold">{stat.label}</p>
+                            <div key={stat.label} className="p-3 md:p-4 bg-background-highest rounded-xl md:rounded-2xl hover:bg-background-bright transition-colors duration-300">
+                                <p className="text-[9px] md:text-[10px] text-foreground-muted uppercase tracking-[0.2em] font-bold">{stat.label}</p>
                                 <div className="mt-2 flex items-end justify-between gap-2">
-                                <p className="font-display text-[40px] md:text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
-                                    <div className="flex items-center gap-1.5 text-[11px] text-foreground-muted font-mono font-bold">
-                                        <Dot className={`w-4 h-4 -m-1 ${stat.tone}`} />
+                                    <p className="font-display text-[28px] md:text-[40px] leading-none font-black tracking-tight text-foreground">{stat.value}</p>
+                                    <div className="flex items-center gap-1 md:gap-1.5 text-[10px] md:text-[11px] text-foreground-muted font-mono font-bold">
+                                        <Dot className={`w-3 h-3 md:w-4 md:h-4 -m-1 ${stat.tone}`} />
                                         <span>{stat.trend}</span>
                                     </div>
                                 </div>
