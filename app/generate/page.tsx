@@ -2,11 +2,13 @@
 
 import AIOutputViewer from '@/components/ai/AIOutputViewer';
 import GenerationTabs, { TabId } from '@/components/ai/GenerationTabs';
+import InvalidInputNotice from '@/components/ai/InvalidInputNotice';
 import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import AIUsageBadge from '@/components/ui/AIUsageBadge';
 import { LoaderFive } from '@/components/ui/loader';
+import { ValidationResult } from '@/lib/security/requirementValidator';
 import { CoverageResult, TestCase } from '@/types/generation.types';
 import { Sparkles, ShieldAlert } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
@@ -38,6 +40,7 @@ function GenerateContent() {
     const [error, setError] = useState<string | null>(null);
     const [rateLimitError, setRateLimitError] = useState<string | null>(null);
     const [usage, setUsage] = useState<UsageData | null>(null);
+    const [invalidInput, setInvalidInput] = useState<ValidationResult | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
         test_cases: null,
         gherkin: null,
@@ -110,6 +113,7 @@ function GenerateContent() {
         setError(null);
         setCoverageError(null);
         setRateLimitError(null);
+        setInvalidInput(null);
         setOutputs(prev => ({ ...prev, coverage: null }));
 
         // Generate a unique batchId for this entire generate action
@@ -287,6 +291,7 @@ function GenerateContent() {
 
                         <RequirementInput
                             onGenerate={handleGenerate}
+                            onInvalidInput={(result) => setInvalidInput(result)}
                             isLoading={isLoading}
                             activeTab={activeTab}
                             initialRequirement={initialRequirement}
@@ -312,16 +317,20 @@ function GenerateContent() {
                     </div>
 
                     <div className="flex-1 overflow-hidden flex flex-col">
-                        <AIOutputViewer
-                            activeTab={activeTab}
-                            testCases={outputs.test_cases}
-                            gherkin={outputs.gherkin}
-                            stepDefs={outputs.step_defs}
-                            isLoading={isLoading}
-                            coverageResult={outputs.coverage}
-                            isCoverageLoading={isCoverageLoading}
-                            coverageError={coverageError}
-                        />
+                        {invalidInput ? (
+                            <InvalidInputNotice validation={invalidInput} />
+                        ) : (
+                            <AIOutputViewer
+                                activeTab={activeTab}
+                                testCases={outputs.test_cases}
+                                gherkin={outputs.gherkin}
+                                stepDefs={outputs.step_defs}
+                                isLoading={isLoading}
+                                coverageResult={outputs.coverage}
+                                isCoverageLoading={isCoverageLoading}
+                                coverageError={coverageError}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
