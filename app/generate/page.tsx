@@ -10,7 +10,7 @@ import AIUsageBadge from '@/components/ui/AIUsageBadge';
 import { LoaderFive } from '@/components/ui/loader';
 import { ValidationResult } from '@/lib/security/requirementValidator';
 import { CoverageResult, TestCase } from '@/types/generation.types';
-import { Sparkles, ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Sparkles } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -109,6 +109,11 @@ function GenerateContent() {
     }, [selectedProjectId]);
 
     const handleGenerate = async (requirement: string) => {
+        if (isBlocked) {
+            setRateLimitError('Daily AI limit reached. Please try again tomorrow.');
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setCoverageError(null);
@@ -243,7 +248,11 @@ function GenerateContent() {
         coverage: !!outputs.coverage,
     };
 
-    const isBlocked = usage && usage.remaining === 0;
+    const isProductionEnvironment = process.env.NEXT_PUBLIC_VERCEL_ENV
+        ? process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+        : process.env.NODE_ENV === 'production';
+
+    const isBlocked = isProductionEnvironment && !!usage && usage.remaining === 0;
 
     return (
         <DashboardLayout>
@@ -296,6 +305,7 @@ function GenerateContent() {
                             activeTab={activeTab}
                             initialRequirement={initialRequirement}
                             autoGenerate={autoGenerate}
+                            isRateLimited={isBlocked}
                         />
 
                         {error && (
