@@ -84,7 +84,7 @@ export default function RequirementInput({
 
     const handleSubmit = () => {
         if (isRateLimited) {
-            setError('Daily AI limit reached. Your quota resets tomorrow.');
+            setError('Rate limit reached. Please try again shortly.');
             setRejection(null);
             return;
         }

@@ -39,6 +39,7 @@ function GenerateContent() {
     const [coverageError, setCoverageError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+    const [rateLimitRetryAfterSec, setRateLimitRetryAfterSec] = useState(0);
     const [usage, setUsage] = useState<UsageData | null>(null);
     const [invalidInput, setInvalidInput] = useState<ValidationResult | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
@@ -70,6 +71,23 @@ function GenerateContent() {
             setSelectedProjectId(pId);
         }
     }, [searchParams]);
+
+    // Countdown for temporary rate-limit lock (production only)
+    useEffect(() => {
+        if (rateLimitRetryAfterSec <= 0) return;
+
+        const timer = setInterval(() => {
+            setRateLimitRetryAfterSec((prev) => {
+                if (prev <= 1) {
+                    setRateLimitError(null);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [rateLimitRetryAfterSec]);
 
     // Load project history when selectedProjectId changes
     useEffect(() => {
@@ -114,6 +132,11 @@ function GenerateContent() {
             return;
         }
 
+        if (isTemporarilyBlocked) {
+            setRateLimitError('Too many requests. Please wait a moment.');
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setCoverageError(null);
@@ -142,7 +165,17 @@ function GenerateContent() {
 
             // Check for rate limit errors
             if (testCasesRes.status === 429 || gherkinRes.status === 429) {
-                const errorData = await (testCasesRes.status === 429 ? testCasesRes : gherkinRes).json();
+                const limitedRes = testCasesRes.status === 429 ? testCasesRes : gherkinRes;
+                const errorData = await limitedRes.json();
+                const retryAfterHeader = limitedRes.headers.get('Retry-After');
+                const retryAfterSec = retryAfterHeader
+                    ? Math.max(1, Number.parseInt(retryAfterHeader, 10) || 0)
+                    : 60;
+
+                if (isProductionEnvironment) {
+                    setRateLimitRetryAfterSec(retryAfterSec);
+                }
+
                 setRateLimitError(errorData.error || 'Daily AI limit reached. Please try again tomorrow.');
                 setIsLoading(false);
                 return;
@@ -253,6 +286,8 @@ function GenerateContent() {
         : process.env.NODE_ENV === 'production';
 
     const isBlocked = isProductionEnvironment && !!usage && usage.remaining === 0;
+    const isTemporarilyBlocked = isProductionEnvironment && rateLimitRetryAfterSec > 0;
+    const isRateLimited = isBlocked || isTemporarilyBlocked;
 
     return (
         <DashboardLayout>
@@ -294,7 +329,9 @@ function GenerateContent() {
                         {/* Rate limit error from API response */}
                         {rateLimitError && !isBlocked && (
                             <div className="card-rich p-4 bg-amber-900/15 border-amber-800/40">
-                                <p className="text-sm text-amber-400">{rateLimitError}</p>
+                                <p className="text-sm text-amber-400">
+                                    {isTemporarilyBlocked ? `${rateLimitError} Try again in ${rateLimitRetryAfterSec}s.` : rateLimitError}
+                                </p>
                             </div>
                         )}
 
@@ -305,7 +342,7 @@ function GenerateContent() {
                             activeTab={activeTab}
                             initialRequirement={initialRequirement}
                             autoGenerate={autoGenerate}
-                            isRateLimited={isBlocked}
+                            isRateLimited={isRateLimited}
                         />
 
                         {error && (
