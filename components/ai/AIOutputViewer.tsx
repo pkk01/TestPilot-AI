@@ -4,7 +4,7 @@ import { TestCase, CoverageResult } from '@/types/generation.types';
 import { Check, Copy, Download, FileText, Package, Sparkles, RefreshCw, ChevronUp } from 'lucide-react';
 import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { TabId } from './GenerationTabs';
 import CoverageAnalysis from './CoverageAnalysis';
 
@@ -312,6 +312,18 @@ export default function AIOutputViewer({
         URL.revokeObjectURL(url);
     };
 
+    // Loading state phrases (must be above all early returns — React hooks rule)
+    const loadingSubtitle = useMemo(() => {
+        const phrases = [
+            'Crafting precision test scenarios for you…',
+            'Turning your vision into testable specs…',
+            'Almost there — quality takes a moment…',
+            'Weaving through edge cases and scenarios…',
+            'Engineering bulletproof test coverage…',
+        ];
+        return phrases[Math.floor(Math.random() * phrases.length)];
+    }, []);
+
     // Coverage tab — delegate entirely to CoverageAnalysis component
     if (activeTab === 'coverage') {
         return (
@@ -324,13 +336,14 @@ export default function AIOutputViewer({
     }
 
     // Loading state
+
     if (isLoading) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center py-20 animate-fade-in shadow-[inset_0_0_100px_rgba(var(--primary-rgb),0.02)]">
                 <LoaderFive text="Analyzing requirement..." />
                 <div className="text-center mt-4">
-                    <p className="text-xs text-foreground-subtle">
-                        Groq AI is processing your request
+                    <p className="text-xs text-foreground-subtle italic">
+                        {loadingSubtitle}
                     </p>
                 </div>
             </div>

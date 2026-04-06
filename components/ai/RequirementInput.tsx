@@ -480,7 +480,7 @@ export default function RequirementInput({
                     <div className="flex items-center gap-4">
                         <LoaderFive size="sm" text="" className="flex-shrink-0" />
                         <p className="text-sm text-foreground font-medium">
-                            AI is analyzing your requirement and generating artifacts...
+                            Sit tight — we're distilling your requirement into test-ready precision…
                         </p>
                     </div>
                 </div>
@@ -491,7 +491,7 @@ export default function RequirementInput({
                     <div className="flex items-center gap-4">
                         <LoaderFive size="sm" text="" className="flex-shrink-0" />
                         <p className="text-sm text-foreground font-medium">
-                            AI is refining your requirement into a clear, testable specification...
+                            Polishing your idea into a crystal-clear specification…
                         </p>
                     </div>
                 </div>

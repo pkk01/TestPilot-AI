@@ -113,8 +113,8 @@ export default function CoverageAnalysis({ coverageResult, isLoading, error }: C
             <div className="flex-1 flex flex-col items-center justify-center py-20 animate-fade-in shadow-[inset_0_0_100px_rgba(var(--primary-rgb),0.02)]">
                 <LoaderFive text="Analyzing requirement coverage..." />
                 <div className="text-center mt-4">
-                    <p className="text-xs text-foreground-subtle">
-                        AI is evaluating test coverage gaps
+                    <p className="text-xs text-foreground-subtle italic">
+                        Mapping blind spots across your test surface…
                     </p>
                 </div>
             </div>

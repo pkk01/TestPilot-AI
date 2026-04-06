@@ -32,7 +32,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
     title: 'TestPilot AI – AI-Powered Test Case Generator',
     description:
-        'Convert software requirements into manual test cases, Gherkin BDD scenarios, and Selenium Java step definitions using Groq AI.',
+        'Convert software requirements into manual test cases, Gherkin BDD scenarios, and Selenium Java step definitions — powered by intelligent automation.',
     keywords: ['test case generator', 'AI testing', 'Gherkin', 'Cucumber', 'Selenium', 'QA automation'],
     icons: {
         icon: '/testpilot-logo-hd.png',
