@@ -2,7 +2,6 @@
 
 import { CoverageResult } from '@/types/generation.types';
 import { AlertTriangle, BarChart3, CheckCircle2, Lightbulb, XCircle } from 'lucide-react';
-import { LoaderFive } from '../ui/loader';
 
 interface CoverageAnalysisProps {
     coverageResult: CoverageResult | null;
@@ -107,15 +106,83 @@ function HeatmapBar({ scenario, coverage }: { scenario: string; coverage: number
 }
 
 export default function CoverageAnalysis({ coverageResult, isLoading, error }: CoverageAnalysisProps) {
-    // Loading state
+    // Loading state — skeleton that matches the actual coverage layout
     if (isLoading) {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center py-20 animate-fade-in shadow-[inset_0_0_100px_rgba(var(--primary-rgb),0.02)]">
-                <LoaderFive text="Analyzing requirement coverage..." />
-                <div className="text-center mt-4">
-                    <p className="text-xs text-foreground-subtle italic">
-                        Mapping blind spots across your test surface…
-                    </p>
+            <div className="flex-1 overflow-auto animate-fade-in">
+                <div className="p-6 space-y-6 max-w-4xl mx-auto">
+                    {/* Header skeleton */}
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="skeleton-base h-4 w-4 rounded" />
+                        <div className="skeleton-base h-5 w-48" />
+                    </div>
+
+                    {/* Score + Heatmap Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4">
+                        {/* Score Gauge skeleton */}
+                        <div className="skeleton-card-wrapper">
+                            <div className="bg-[#111827]/80 border border-gray-800 rounded-2xl p-6 flex flex-col items-center justify-center">
+                                <div className="skeleton-circle w-36 h-36" />
+                                <div className="skeleton-base h-3 w-20 mt-3" />
+                            </div>
+                        </div>
+
+                        {/* Heatmap skeleton */}
+                        <div className="skeleton-card-wrapper" style={{ animationDelay: '80ms' }}>
+                            <div className="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 md:p-6">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="skeleton-base w-1 h-4 rounded-full" />
+                                    <div className="skeleton-base h-4 w-32" />
+                                </div>
+                                <div className="space-y-4">
+                                    {[85, 65, 45, 90, 55].map((w, i) => (
+                                        <div key={i}>
+                                            <div className="flex items-center justify-between mb-1.5">
+                                                <div className="skeleton-base h-3" style={{ width: `${w}%`, maxWidth: '200px' }} />
+                                                <div className="skeleton-base h-3 w-8" />
+                                            </div>
+                                            <div className="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
+                                                <div className="skeleton-block h-full rounded-full" style={{ width: `${w}%` }} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Covered + Missing Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[0, 1].map((col) => (
+                            <div key={col} className="skeleton-card-wrapper" style={{ animationDelay: `${160 + col * 80}ms` }}>
+                                <div className="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 md:p-6">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className={`skeleton-base w-1 h-4 rounded-full`} />
+                                        <div className="skeleton-base h-4 w-36" />
+                                        <div className="skeleton-base h-4 w-6 ml-auto rounded" />
+                                    </div>
+                                    <div className="space-y-2.5">
+                                        {[0, 1, 2].map((j) => (
+                                            <div key={j} className="flex items-start gap-2">
+                                                <div className="skeleton-base h-3.5 w-3.5 flex-shrink-0 mt-0.5 rounded-full" />
+                                                <div className="skeleton-base h-3" style={{ width: `${75 - j * 15}%` }} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Bottom status */}
+                <div className="px-6 pb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <p className="text-xs text-foreground-subtle italic">
+                            Mapping blind spots across your test surface…
+                        </p>
+                    </div>
                 </div>
             </div>
         );

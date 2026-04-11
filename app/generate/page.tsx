@@ -7,7 +7,6 @@ import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import AIUsageBadge from '@/components/ui/AIUsageBadge';
-import { LoaderFive } from '@/components/ui/loader';
 import { ValidationResult } from '@/lib/security/requirementValidator';
 import { CoverageResult, TestCase } from '@/types/generation.types';
 import { ShieldAlert, Sparkles } from 'lucide-react';
@@ -389,8 +388,35 @@ export default function GeneratePage() {
     return (
         <Suspense fallback={
             <DashboardLayout>
-                <div className="flex items-center justify-center h-full">
-                    <LoaderFive text="Preparing workspace..." />
+                <div className="flex flex-col md:flex-row h-full">
+                    {/* Left Panel skeleton */}
+                    <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col">
+                        <div className="px-4 py-4 md:px-6 md:py-5 border-b border-border">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="skeleton-base h-5 w-5 rounded" />
+                                <div className="skeleton-base h-5 w-32" />
+                            </div>
+                            <div className="skeleton-base h-3 w-56 ml-7" />
+                        </div>
+                        <div className="flex-1 p-4 md:p-6 space-y-4">
+                            <div className="skeleton-block h-10 w-full rounded-xl" />
+                            <div className="skeleton-block h-[280px] w-full rounded-xl" />
+                            <div className="skeleton-block h-11 w-full rounded-lg" />
+                        </div>
+                    </div>
+                    {/* Right Panel skeleton */}
+                    <div className="flex-1 flex flex-col min-w-0 bg-background">
+                        <div className="border-b border-border bg-background-surface px-4 py-3 flex gap-4">
+                            {[0, 1, 2, 3].map(i => (
+                                <div key={i} className="skeleton-base h-5 w-20 rounded" />
+                            ))}
+                        </div>
+                        <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20">
+                            <div className="skeleton-block w-14 h-14 rounded-xl" />
+                            <div className="skeleton-base h-4 w-24" />
+                            <div className="skeleton-base h-3 w-56" />
+                        </div>
+                    </div>
                 </div>
             </DashboardLayout>
         }>

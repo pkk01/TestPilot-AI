@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { LoaderFive } from '../ui/loader';
 
 interface RequirementInputProps {
     onGenerate: (requirement: string) => void;
@@ -285,7 +284,7 @@ export default function RequirementInput({
                         >
                             {isEnhancing ? (
                                 <>
-                                    <LoaderFive size="sm" text="" className="gap-0 flex-shrink-0" />
+                                    <div className="w-3 h-3 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
                                     <span>Enhancing...</span>
                                 </>
                             ) : (
@@ -464,7 +463,7 @@ export default function RequirementInput({
             >
                 {isLoading ? (
                     <>
-                        <LoaderFive size="sm" text="" className="gap-0" />
+                        <div className="w-4 h-4 rounded-full bg-white/30 animate-pulse" />
                         <span>Generating...</span>
                     </>
                 ) : (
@@ -478,10 +477,16 @@ export default function RequirementInput({
             {isLoading && (
                 <div className="card-rich p-4 animate-fade-in border-primary/20 bg-primary/5">
                     <div className="flex items-center gap-4">
-                        <LoaderFive size="sm" text="" className="flex-shrink-0" />
-                        <p className="text-sm text-foreground font-medium">
-                            Sit tight — we're distilling your requirement into test-ready precision…
-                        </p>
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
+                        <div className="flex-1">
+                            <p className="text-sm text-foreground font-medium mb-2">
+                                Sit tight — we're distilling your requirement into test-ready precision…
+                            </p>
+                            <div className="space-y-1.5">
+                                <div className="skeleton-line w-full" />
+                                <div className="skeleton-line w-[70%]" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -489,10 +494,16 @@ export default function RequirementInput({
             {isEnhancing && (
                 <div className="card-rich p-4 animate-fade-in border-violet-500/20 bg-violet-500/5">
                     <div className="flex items-center gap-4">
-                        <LoaderFive size="sm" text="" className="flex-shrink-0" />
-                        <p className="text-sm text-foreground font-medium">
-                            Polishing your idea into a crystal-clear specification…
-                        </p>
+                        <div className="w-2 h-2 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
+                        <div className="flex-1">
+                            <p className="text-sm text-foreground font-medium mb-2">
+                                Polishing your idea into a crystal-clear specification…
+                            </p>
+                            <div className="space-y-1.5">
+                                <div className="skeleton-line w-full" />
+                                <div className="skeleton-line w-[60%]" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

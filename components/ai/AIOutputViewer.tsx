@@ -2,7 +2,6 @@
 
 import { TestCase, CoverageResult } from '@/types/generation.types';
 import { Check, Copy, Download, FileText, Package, Sparkles, RefreshCw, ChevronUp } from 'lucide-react';
-import { LoaderFive } from '../ui/loader';
 import dynamic from 'next/dynamic';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { TabId } from './GenerationTabs';
@@ -335,16 +334,102 @@ export default function AIOutputViewer({
         );
     }
 
-    // Loading state
+    // Loading state — skeleton UI that matches actual content layout
 
     if (isLoading) {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center py-20 animate-fade-in shadow-[inset_0_0_100px_rgba(var(--primary-rgb),0.02)]">
-                <LoaderFive text="Analyzing requirement..." />
-                <div className="text-center mt-4">
-                    <p className="text-xs text-foreground-subtle italic">
-                        {loadingSubtitle}
-                    </p>
+            <div className="flex-1 flex flex-col min-h-0 animate-fade-in">
+                {/* Skeleton Toolbar */}
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-background-surface">
+                    <div className="flex items-center gap-2">
+                        <div className="skeleton-base h-5 w-24" />
+                        <div className="skeleton-base h-4 w-16" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="skeleton-base h-7 w-16 rounded-lg" />
+                        <div className="skeleton-base h-7 w-20 rounded-lg" />
+                    </div>
+                </div>
+
+                {/* Skeleton content */}
+                <div className="flex-1 overflow-auto">
+                    {activeTab === 'test_cases' ? (
+                        /* Skeleton Test Case Cards */
+                        <div className="p-4 space-y-3">
+                            {[0, 1, 2, 3].map((i) => (
+                                <div key={i} className="skeleton-card-wrapper">
+                                    <div className="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 md:p-6">
+                                        {/* Card header: ID + title + badge */}
+                                        <div className="flex items-start justify-between gap-3 mb-4">
+                                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                                <div className="skeleton-base h-5 w-14 flex-shrink-0" />
+                                                <div className="skeleton-base h-4 flex-1 max-w-[280px]" />
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                                <div className="skeleton-base h-6 w-16 rounded-full" />
+                                            </div>
+                                        </div>
+                                        {/* Preconditions */}
+                                        <div className="mb-3">
+                                            <div className="skeleton-base h-3 w-24 mb-2" />
+                                            <div className="skeleton-base h-3 w-[70%]" />
+                                        </div>
+                                        {/* Steps */}
+                                        <div className="mb-3">
+                                            <div className="skeleton-base h-3 w-10 mb-2.5" />
+                                            <div className="space-y-2">
+                                                <div className="flex gap-2">
+                                                    <div className="skeleton-base h-3 w-4 flex-shrink-0" />
+                                                    <div className="skeleton-base h-3 flex-1 max-w-[90%]" />
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <div className="skeleton-base h-3 w-4 flex-shrink-0" />
+                                                    <div className="skeleton-base h-3 flex-1 max-w-[75%]" />
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <div className="skeleton-base h-3 w-4 flex-shrink-0" />
+                                                    <div className="skeleton-base h-3 flex-1 max-w-[60%]" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/* Expected result */}
+                                        <div>
+                                            <div className="skeleton-base h-3 w-28 mb-2" />
+                                            <div className="skeleton-base h-3 w-[55%]" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        /* Skeleton Code Editor */
+                        <div className="h-full min-h-[500px] p-4">
+                            <div className="bg-[#1e1e1e] rounded-lg border border-gray-800 p-4 h-full">
+                                <div className="space-y-2.5">
+                                    {[100, 75, 90, 60, 0, 85, 70, 95, 45, 0, 80, 65, 55, 0, 90, 70, 50, 85, 0, 75].map((w, i) => (
+                                        w === 0 ? (
+                                            <div key={i} className="h-4" />
+                                        ) : (
+                                            <div key={i} className="flex gap-3 skeleton-card-wrapper" style={{ animationDelay: `${i * 40}ms` }}>
+                                                <div className="skeleton-base h-4 w-8 flex-shrink-0 opacity-40" />
+                                                <div className="skeleton-base h-4 flex-shrink-0" style={{ width: `${w}%` }} />
+                                            </div>
+                                        )
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Bottom status hint */}
+                <div className="border-t border-border bg-background-surface px-4 py-3">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                        <p className="text-xs text-foreground-subtle italic">
+                            {loadingSubtitle}
+                        </p>
+                    </div>
                 </div>
             </div>
         );
@@ -434,7 +519,7 @@ export default function AIOutputViewer({
                                 className="btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all disabled:opacity-50"
                             >
                                 {exporting === 'selenium' ? (
-                                    <><LoaderFive size="sm" text="" className="gap-0" /><span>Preparing...</span></>
+                                    <><div className="w-3 h-3 rounded-full bg-primary animate-pulse" /><span>Preparing...</span></>
                                 ) : (
                                     <><Download className="w-3.5 h-3.5" /><span>Selenium (Java)</span></>
                                 )}
@@ -445,7 +530,7 @@ export default function AIOutputViewer({
                                 className="btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all disabled:opacity-50"
                             >
                                 {exporting === 'playwright' ? (
-                                    <><LoaderFive size="sm" text="" className="gap-0" /><span>Preparing...</span></>
+                                    <><div className="w-3 h-3 rounded-full bg-primary animate-pulse" /><span>Preparing...</span></>
                                 ) : (
                                     <><Download className="w-3.5 h-3.5" /><span>Playwright (TS)</span></>
                                 )}
