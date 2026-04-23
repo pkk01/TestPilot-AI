@@ -2,13 +2,14 @@
 
 import AIOutputViewer from '@/components/ai/AIOutputViewer';
 import GenerationTabs, { TabId } from '@/components/ai/GenerationTabs';
+import InvalidInputNotice from '@/components/ai/InvalidInputNotice';
 import ProjectSelector from '@/components/ai/ProjectSelector';
 import RequirementInput from '@/components/ai/RequirementInput';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import AIUsageBadge from '@/components/ui/AIUsageBadge';
-import { LoaderFive } from '@/components/ui/loader';
+import { ValidationResult } from '@/lib/security/requirementValidator';
 import { CoverageResult, TestCase } from '@/types/generation.types';
-import { Sparkles, ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Sparkles } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,7 +38,9 @@ function GenerateContent() {
     const [coverageError, setCoverageError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+    const [rateLimitRetryAfterSec, setRateLimitRetryAfterSec] = useState(0);
     const [usage, setUsage] = useState<UsageData | null>(null);
+    const [invalidInput, setInvalidInput] = useState<ValidationResult | null>(null);
     const [outputs, setOutputs] = useState<GenerationState>({
         test_cases: null,
         gherkin: null,
@@ -67,6 +70,23 @@ function GenerateContent() {
             setSelectedProjectId(pId);
         }
     }, [searchParams]);
+
+    // Countdown for temporary rate-limit lock (production only)
+    useEffect(() => {
+        if (rateLimitRetryAfterSec <= 0) return;
+
+        const timer = setInterval(() => {
+            setRateLimitRetryAfterSec((prev) => {
+                if (prev <= 1) {
+                    setRateLimitError(null);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [rateLimitRetryAfterSec]);
 
     // Load project history when selectedProjectId changes
     useEffect(() => {
@@ -106,10 +126,21 @@ function GenerateContent() {
     }, [selectedProjectId]);
 
     const handleGenerate = async (requirement: string) => {
+        if (isBlocked) {
+            setRateLimitError('Daily AI limit reached. Please try again tomorrow.');
+            return;
+        }
+
+        if (isTemporarilyBlocked) {
+            setRateLimitError('Too many requests. Please wait a moment.');
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setCoverageError(null);
         setRateLimitError(null);
+        setInvalidInput(null);
         setOutputs(prev => ({ ...prev, coverage: null }));
 
         // Generate a unique batchId for this entire generate action
@@ -133,7 +164,17 @@ function GenerateContent() {
 
             // Check for rate limit errors
             if (testCasesRes.status === 429 || gherkinRes.status === 429) {
-                const errorData = await (testCasesRes.status === 429 ? testCasesRes : gherkinRes).json();
+                const limitedRes = testCasesRes.status === 429 ? testCasesRes : gherkinRes;
+                const errorData = await limitedRes.json();
+                const retryAfterHeader = limitedRes.headers.get('Retry-After');
+                const retryAfterSec = retryAfterHeader
+                    ? Math.max(1, Number.parseInt(retryAfterHeader, 10) || 0)
+                    : 60;
+
+                if (isProductionEnvironment) {
+                    setRateLimitRetryAfterSec(retryAfterSec);
+                }
+
                 setRateLimitError(errorData.error || 'Daily AI limit reached. Please try again tomorrow.');
                 setIsLoading(false);
                 return;
@@ -239,7 +280,13 @@ function GenerateContent() {
         coverage: !!outputs.coverage,
     };
 
-    const isBlocked = usage && usage.remaining === 0;
+    const isProductionEnvironment = process.env.NEXT_PUBLIC_VERCEL_ENV
+        ? process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+        : process.env.NODE_ENV === 'production';
+
+    const isBlocked = isProductionEnvironment && !!usage && usage.remaining === 0;
+    const isTemporarilyBlocked = isProductionEnvironment && rateLimitRetryAfterSec > 0;
+    const isRateLimited = isBlocked || isTemporarilyBlocked;
 
     return (
         <DashboardLayout>
@@ -281,16 +328,20 @@ function GenerateContent() {
                         {/* Rate limit error from API response */}
                         {rateLimitError && !isBlocked && (
                             <div className="card-rich p-4 bg-amber-900/15 border-amber-800/40">
-                                <p className="text-sm text-amber-400">{rateLimitError}</p>
+                                <p className="text-sm text-amber-400">
+                                    {isTemporarilyBlocked ? `${rateLimitError} Try again in ${rateLimitRetryAfterSec}s.` : rateLimitError}
+                                </p>
                             </div>
                         )}
 
                         <RequirementInput
                             onGenerate={handleGenerate}
+                            onInvalidInput={(result) => setInvalidInput(result)}
                             isLoading={isLoading}
                             activeTab={activeTab}
                             initialRequirement={initialRequirement}
                             autoGenerate={autoGenerate}
+                            isRateLimited={isRateLimited}
                         />
 
                         {error && (
@@ -312,16 +363,20 @@ function GenerateContent() {
                     </div>
 
                     <div className="flex-1 overflow-hidden flex flex-col">
-                        <AIOutputViewer
-                            activeTab={activeTab}
-                            testCases={outputs.test_cases}
-                            gherkin={outputs.gherkin}
-                            stepDefs={outputs.step_defs}
-                            isLoading={isLoading}
-                            coverageResult={outputs.coverage}
-                            isCoverageLoading={isCoverageLoading}
-                            coverageError={coverageError}
-                        />
+                        {invalidInput ? (
+                            <InvalidInputNotice validation={invalidInput} />
+                        ) : (
+                            <AIOutputViewer
+                                activeTab={activeTab}
+                                testCases={outputs.test_cases}
+                                gherkin={outputs.gherkin}
+                                stepDefs={outputs.step_defs}
+                                isLoading={isLoading}
+                                coverageResult={outputs.coverage}
+                                isCoverageLoading={isCoverageLoading}
+                                coverageError={coverageError}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
@@ -333,8 +388,35 @@ export default function GeneratePage() {
     return (
         <Suspense fallback={
             <DashboardLayout>
-                <div className="flex items-center justify-center h-full">
-                    <LoaderFive text="Preparing workspace..." />
+                <div className="flex flex-col md:flex-row h-full">
+                    {/* Left Panel skeleton */}
+                    <div className="w-full md:w-[400px] md:flex-shrink-0 border-b md:border-b-0 md:border-r border-border bg-background-surface flex flex-col">
+                        <div className="px-4 py-4 md:px-6 md:py-5 border-b border-border">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="skeleton-base h-5 w-5 rounded" />
+                                <div className="skeleton-base h-5 w-32" />
+                            </div>
+                            <div className="skeleton-base h-3 w-56 ml-7" />
+                        </div>
+                        <div className="flex-1 p-4 md:p-6 space-y-4">
+                            <div className="skeleton-block h-10 w-full rounded-xl" />
+                            <div className="skeleton-block h-[280px] w-full rounded-xl" />
+                            <div className="skeleton-block h-11 w-full rounded-lg" />
+                        </div>
+                    </div>
+                    {/* Right Panel skeleton */}
+                    <div className="flex-1 flex flex-col min-w-0 bg-background">
+                        <div className="border-b border-border bg-background-surface px-4 py-3 flex gap-4">
+                            {[0, 1, 2, 3].map(i => (
+                                <div key={i} className="skeleton-base h-5 w-20 rounded" />
+                            ))}
+                        </div>
+                        <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20">
+                            <div className="skeleton-block w-14 h-14 rounded-xl" />
+                            <div className="skeleton-base h-4 w-24" />
+                            <div className="skeleton-base h-3 w-56" />
+                        </div>
+                    </div>
                 </div>
             </DashboardLayout>
         }>

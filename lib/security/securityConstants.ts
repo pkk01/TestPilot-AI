@@ -49,9 +49,17 @@ export const XSS_PATTERNS = [
 
 /** Very low-value / spam inputs to reject */
 export const SPAM_PATTERNS = [
-    /^(hi|hey|hello|test|testing|yo|ok|okay|a+|b+)\s*\.?$/i,
-    /^(.)\1{5,}$/,  // Repeated single character like "aaaaaa"
+    /^(hi+|hey+|hello+|test(ing)?|yo+|ok(ay)?|a+|b+|sup|howdy|hola)\s*[.!?]*$/i,
+    /^(.)\1{4,}$/,  // Repeated single character like "aaaaa"
     /^\s*$/,         // Empty or whitespace only
+    /^(how are you|how('s| is) it going|what('s| is) up|whats up)/i,
+    /^(good (morning|afternoon|evening|night))\s*[.!?]*$/i,
+    /^(thank(s| you)|thx|ty|cheers|lol|lmao|haha+|bruh)\s*[.!?]*$/i,
+    /^(bye|goodbye|see ya|later|cya|yes|no|maybe|nah|nope)\s*[.!?]*$/i,
+    /^(what are you|who are you|are you a)/i,
+    /^(tell me a joke|sing|play|draw|cook)/i,
+    /(asdf|qwer|zxcv|hjkl|uiop)/i,  // Keyboard smash
+    /^[^a-zA-Z]*$/,  // No letters at all (just symbols/numbers)
 ];
 
 /** Security headers applied to every response */
